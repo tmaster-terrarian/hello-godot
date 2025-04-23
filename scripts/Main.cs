@@ -35,12 +35,19 @@ public partial class Main : Node
         };
 
         _tileGrid.TreeEntered += () => {
+            var darkerMat = GD.Load<BaseMaterial3D>("res://materials/darker.tres");
+
             for(int x = -Width / 2; x < (Width + 1) / 2; x++)
             {
                 for(int z = -Height / 2; z < (Height + 1) / 2; z++)
                 {
                     var node = _tile.Instantiate<Node3D>();
                     Vector3 pos = new(x, 0, z);
+
+                    if(((x + Width / 2) % 2 == 1) ^ ((z + Height / 2) % 2 == 1))
+                    {
+                        node.GetChild(0).GetChild<MeshInstance3D>(0, true).MaterialOverride = darkerMat;
+                    }
 
                     if(Width % 2 == 0)
                         pos.X += 0.5f;
