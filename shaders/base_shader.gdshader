@@ -35,12 +35,12 @@ void fragment() {
 	vec4 color = MatcapColor(matcap, v_world_normal, v_eye_pos, v_world_pos, margin, is_spatial);
 	
 	vec3 worldNormal = (INV_VIEW_MATRIX * vec4(NORMAL.xyz, 0.0)).xyz;
-	float lightDirDot = (dot(worldNormal, vec3(0, 1, 0)) + 1.0) / 2.0;
+	float lightDirDot = ((dot(worldNormal, vec3(0, 1, 0)) + 1.0) / 2.0) + 0.2;
 	ALBEDO = COLOR.rgb * color.rgb * tint * lightDirDot;
 }
 
-void light() {
-	// Called for every pixel for every light affecting the material.
-	// Uncomment to replace the default light processing function with this one.
-	DIFFUSE_LIGHT = vec3(0,0,0);
-}
+//void light() {
+	//// Called for every pixel for every light affecting the material.
+	//// Uncomment to replace the default light processing function with this one.
+	//DIFFUSE_LIGHT = vec3(1,1,1) * 3.0;
+//}

@@ -1,0 +1,12 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://iiusqbu6du3g"]
+
+[ext_resource type="Shader" uid="uid://bqrq5n5qog0if" path="res://shaders/base_shader.gdshader" id="1_bad26"]
+[ext_resource type="Texture2D" uid="uid://b0kljldbvfn6f" path="res://matcaps/Matcap_Metal_01.png" id="2_t6v33"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_bad26")
+shader_parameter/matcap = ExtResource("2_t6v33")
+shader_parameter/margin = 0.314
+shader_parameter/is_spatial = false
+shader_parameter/tint = Color(1, 1, 1, 1)
