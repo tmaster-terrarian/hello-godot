@@ -1,11 +1,12 @@
 {
-    "files.exclude": {
-        "**/.git": true,
-        "**/.svn": true,
-        "**/.hg": true,
-        "**/.DS_Store": true,
-        "**/Thumbs.db": true,
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
 
-        "**/*.uid": true
-    }
+    "**/*.uid": true
+  },
+  "godotTools.editorPath.godot4": "/Applications/Godot_mono.app"
 }

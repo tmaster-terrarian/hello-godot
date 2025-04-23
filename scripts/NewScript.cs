@@ -10,9 +10,9 @@ public partial class NewScript : Node
 	{
 		base._Process(delta);
 
-		if(Input.IsActionJustPressed("test_click"))
+		if (Input.IsActionJustPressed("test_click"))
 		{
-			if(Label is not null)
+			if (Label is not null)
 			{
 				Label.Text = "goodbye";
 			}

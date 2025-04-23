@@ -14,10 +14,12 @@ public partial class Tile : Node3D
     private bool _flagActive = false;
 
     [Export]
-    public bool FlagActive {
+    public bool FlagActive
+    {
         get => _flagActive;
-        set {
-            if(_flagActive == value)
+        set
+        {
+            if (_flagActive == value)
                 return;
 
             _flagActive = value;

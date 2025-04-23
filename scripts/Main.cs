@@ -8,6 +8,7 @@ public partial class Main : Node
 	private Node3D _tileGrid;
 
 	private PackedScene _tile = GD.Load<PackedScene>("res://scenes/tile.tscn");
+	private PackedScene _player = GD.Load<PackedScene>("res://scenes/player.tscn");
 
 	private bool[,] _bomb;
 	private bool[,] _flagged;
@@ -19,10 +20,10 @@ public partial class Main : Node
 
 	[Export]
 	public int Height { get; set; } = 9;
-	
+
 	[Export]
 	public Material Material1;
-	
+
 	[Export]
 	public Material Material2;
 
@@ -36,19 +37,21 @@ public partial class Main : Node
 		_bombPositions = new Vector2I[bombs];
 		Array.Fill(_bombPositions, new(-1, -1));
 
-		_tileGrid = new() {
+		_tileGrid = new()
+		{
 			Name = "tiles"
 		};
 
-		_tileGrid.TreeEntered += () => {
-			for(int x = -Width / 2; x < (Width + 1) / 2; x++)
+		_tileGrid.TreeEntered += () =>
+		{
+			for (int x = -Width / 2; x < (Width + 1) / 2; x++)
 			{
-				for(int z = -Height / 2; z < (Height + 1) / 2; z++)
+				for (int z = -Height / 2; z < (Height + 1) / 2; z++)
 				{
 					var node = _tile.Instantiate<Node3D>();
 					Vector3 pos = new(x, 0, z);
 
-					if(((x + Width / 2) % 2 == 1) ^ ((z + Height / 2) % 2 == 1))
+					if (((x + Width / 2) % 2 == 1) ^ ((z + Height / 2) % 2 == 1))
 					{
 						node.GetChild(0).GetChild<MeshInstance3D>(0, true).MaterialOverride = Material1;
 					}
@@ -57,9 +60,9 @@ public partial class Main : Node
 						node.GetChild(0).GetChild<MeshInstance3D>(0, true).MaterialOverride = Material2;
 					}
 
-					if(Width % 2 == 0)
+					if (Width % 2 == 0)
 						pos.X += 0.5f;
-					if(Height % 2 == 0)
+					if (Height % 2 == 0)
 						pos.Z += 0.5f;
 
 					node.Position = pos;
@@ -71,14 +74,15 @@ public partial class Main : Node
 			}
 
 			List<Vector2I> bombPositions = [];
-			for(int i = 0; i < bombs; i++)
+			for (int i = 0; i < bombs; i++)
 			{
 				Vector2I pos;
 
-				do {
+				do
+				{
 					pos = new(Random.Shared.Next(Width), Random.Shared.Next(Height));
 				}
-				while(bombPositions.Contains(pos));
+				while (bombPositions.Contains(pos));
 
 				bombPositions.Add(pos);
 
@@ -90,19 +94,21 @@ public partial class Main : Node
 
 		AddChild(_tileGrid);
 
-		// AddChild(_tile.Instantiate());
+		var player = _player.Instantiate<Node3D>();
+		player.Position = new Vector3(0, 0.5f, 0);
+		AddChild(player);
 	}
 
 	public override void _Process(double delta)
 	{
-		if(Input.IsActionJustPressed("test_click"))
+		if (Input.IsActionJustPressed("test_click"))
 		{
 			bool found = false;
-			for(int x = 0; x < Width; x++)
+			for (int x = 0; x < Width; x++)
 			{
-				for(int y = 0; y < Height; y++)
+				for (int y = 0; y < Height; y++)
 				{
-					if(_flagged[x, y])
+					if (_flagged[x, y])
 					{
 						_flagged[x, y] = false;
 						_tiles[x, y].FlagActive = false;
@@ -110,7 +116,7 @@ public partial class Main : Node
 						break;
 					}
 				}
-				if(found)
+				if (found)
 					break;
 			}
 		}
@@ -118,6 +124,6 @@ public partial class Main : Node
 
 	public override void _PhysicsProcess(double delta)
 	{
-		
+
 	}
 }
