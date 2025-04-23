@@ -13,6 +13,7 @@ render_mode unshaded;
 uniform sampler2D matcap: source_color, hint_default_white;
 uniform float margin: hint_range(0.0, 0.314) = 0.314;
 uniform bool is_spatial = false;
+uniform vec3 tint: source_color = vec3(1,1,1);
 
 /*
 	Varyings;
@@ -35,10 +36,11 @@ void fragment() {
 	
 	vec3 worldNormal = (INV_VIEW_MATRIX * vec4(NORMAL.xyz, 0.0)).xyz;
 	float lightDirDot = (dot(worldNormal, vec3(0, 1, 0)) + 1.0) / 2.0;
-	ALBEDO = COLOR.rgb * color.rgb * lightDirDot;
+	ALBEDO = COLOR.rgb * color.rgb * tint * lightDirDot;
 }
 
 void light() {
 	// Called for every pixel for every light affecting the material.
 	// Uncomment to replace the default light processing function with this one.
+	DIFFUSE_LIGHT = vec3(0,0,0);
 }

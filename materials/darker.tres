@@ -1,6 +1,12 @@
-[gd_resource type="StandardMaterial3D" format=3 uid="uid://b24eo1wl6xt47"]
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://bhugfvjol3kr6"]
+
+[ext_resource type="Shader" uid="uid://bqrq5n5qog0if" path="res://shaders/base_shader.gdshader" id="1_51sw6"]
+[ext_resource type="Texture2D" uid="uid://6l2hr04sidfq" path="res://matcaps/Matcap_Metal_03.png" id="2_mvqyy"]
 
 [resource]
-albedo_color = Color(0.435192, 0.435192, 0.435192, 1)
-metallic = 0.5
-roughness = 0.81
+render_priority = 0
+shader = ExtResource("1_51sw6")
+shader_parameter/matcap = ExtResource("2_mvqyy")
+shader_parameter/margin = 0.314
+shader_parameter/is_spatial = false
+shader_parameter/tint = Color(0.581608, 0.581608, 0.581608, 1)
