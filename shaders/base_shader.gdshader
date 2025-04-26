@@ -14,6 +14,7 @@ uniform sampler2D matcap: source_color, hint_default_white;
 uniform float margin: hint_range(0.0, 0.314) = 0.314;
 uniform bool is_spatial = false;
 uniform vec3 tint: source_color = vec3(1,1,1);
+instance uniform float brightness: hint_range(0.0, 1.0) = 1.0;
 
 /*
 	Varyings;
@@ -45,7 +46,12 @@ void fragment() {
 
 	vec3 worldNormal = (INV_VIEW_MATRIX * vec4(NORMAL.xyz, 0.0)).xyz;
 	float lightDirDot = ((dot(worldNormal, vec3(0, 1, 0)) + 1.0) / 2.0) + 0.2;
-	ALBEDO = COLOR.rgb * color.rgb * tint * lightDirDot;
+
+	vec3 hsv = rgb2hsv(tint);
+	hsv.y = mix(hsv.y, 1.0, 1.0 - brightness);
+	hsv.z = mix(hsv.z, hsv.z * 0.8, 1.0 - brightness);
+	vec3 tintAdjusted = hsv2rgb(hsv);
+	ALBEDO = COLOR.rgb * color.rgb * tintAdjusted * lightDirDot;
 }
 
 //void light() {
