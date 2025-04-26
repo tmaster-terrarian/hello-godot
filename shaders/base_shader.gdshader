@@ -12,6 +12,7 @@ render_mode unshaded;
 */
 uniform sampler2D matcap: source_color, hint_default_white;
 uniform float margin: hint_range(0.0, 0.314) = 0.314;
+uniform float matcap_intensity: hint_range(0.0, 1.0) = 1.0;
 uniform bool is_spatial = false;
 uniform vec3 tint: source_color = vec3(1,1,1);
 instance uniform float brightness: hint_range(0.0, 1.0) = 1.0;
@@ -43,6 +44,7 @@ void vertex() {
 
 void fragment() {
 	vec4 color = MatcapColor(matcap, v_world_normal, v_eye_pos, v_world_pos, margin, is_spatial);
+	color.rgb = mix(vec3(1.0), color.rgb, matcap_intensity);
 
 	vec3 worldNormal = (INV_VIEW_MATRIX * vec4(NORMAL.xyz, 0.0)).xyz;
 	float lightDirDot = ((dot(worldNormal, vec3(0, 1, 0)) + 1.0) / 2.0) + 0.2;
