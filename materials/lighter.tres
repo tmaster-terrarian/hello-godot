@@ -9,4 +9,4 @@ shader = ExtResource("1_hnycq")
 shader_parameter/matcap = ExtResource("2_4bihj")
 shader_parameter/margin = 0.314
 shader_parameter/is_spatial = false
-shader_parameter/tint = Color(0.74618, 0.74618, 0.74618, 1)
+shader_parameter/tint = Color(0.92805, 0.639513, 0.841815, 1)

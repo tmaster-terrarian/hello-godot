@@ -1,10 +1,18 @@
-[gd_scene load_steps=5 format=3 uid="uid://d2p17he84fook"]
+[gd_scene load_steps=8 format=3 uid="uid://d2p17he84fook"]
 
 [ext_resource type="Script" uid="uid://blker6t3tfdyp" path="res://scripts/Main.cs" id="1_0wfyh"]
 [ext_resource type="Material" uid="uid://bhugfvjol3kr6" path="res://materials/darker.tres" id="2_jyhfs"]
 [ext_resource type="Material" uid="uid://c0r8yw2hlpnq3" path="res://materials/lighter.tres" id="3_tbgi4"]
+[ext_resource type="Shader" uid="uid://d2jebcsjlmhr0" path="res://shaders/gradient_sky.gdshader" id="4_jyhfs"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tbgi4"]
+shader = ExtResource("4_jyhfs")
+
+[sub_resource type="Sky" id="Sky_tefeu"]
+sky_material = SubResource("ShaderMaterial_tbgi4")
 
 [sub_resource type="Environment" id="Environment_jyhfs"]
+sky = SubResource("Sky_tefeu")
 glow_bloom = 1.0
 
 [node name="Main" type="Node3D"]

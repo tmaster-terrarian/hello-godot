@@ -7,9 +7,9 @@
 [node name="tile" type="Node3D" node_paths=PackedStringArray("Block", "Flag")]
 script = ExtResource("1_jy7pm")
 Block = NodePath("tile")
-Flag = NodePath("flag")
+Flag = NodePath("tile/flag")
 
 [node name="tile" parent="." instance=ExtResource("1_3dk36")]
 
-[node name="flag" parent="." instance=ExtResource("3_jy7pm")]
+[node name="flag" parent="tile" instance=ExtResource("3_jy7pm")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)

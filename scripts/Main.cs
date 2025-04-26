@@ -3,13 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
+using NewGameProject.scripts;
 
 public partial class Main : Node
 {
 	private Node3D _tileGrid;
 
 	private PackedScene _tile = GD.Load<PackedScene>("res://scenes/tile.tscn");
-	private PackedScene _player = GD.Load<PackedScene>("res://models/player.glb");
 
 	private Node3D _playerInstance;
 
@@ -72,6 +73,7 @@ public partial class Main : Node
 						pos.Z += 0.5f;
 
 					node.Position = pos;
+					node.RotateY((float)GD.RandRange(-0.1, 0.1));
 					node.Name = $"tile_{x + Width / 2}_{z + Height / 2}";
 
 					_tiles[x + Width / 2, z + Height / 2] = (Tile)node;
@@ -100,12 +102,8 @@ public partial class Main : Node
 
 		AddChild(_tileGrid);
 
-		_playerInstance = _player.Instantiate<Node3D>();
+		_playerInstance = new Player(StepOffTile, CanMoveToTile);
 		_playerInstance.Position = new Vector3(0, 0.5f, 0);
-		_playerInstance.GetNode<AnimationPlayer>("AnimationPlayer").Play("idle");
-		_playerInstance.GetNode<Node3D>("RoboBoy/Skeleton3D/Ice Head").SetVisible(false);
-		_playerInstance.GetNode<Node3D>("RoboBoy/Skeleton3D/Water Head").SetVisible(false);
-		_playerInstance.GetNode<Node3D>("Pick").SetVisible(false);
 		AddChild(_playerInstance);
 	}
 
@@ -130,27 +128,35 @@ public partial class Main : Node
 					break;
 			}
 		}
-
-		var inputDir = Vector3.Zero;
-		if (Input.IsActionJustPressed("move_east"))
-			inputDir = Vector3.Right;
-		else if (Input.IsActionJustPressed("move_west"))
-			inputDir = Vector3.Left;
-		else if (Input.IsActionJustPressed("move_south"))
-			inputDir = Vector3.Back;
-		else if (Input.IsActionJustPressed("move_north"))
-			inputDir = Vector3.Forward;
-
-		var moveMade = inputDir.X != 0 || inputDir.Z != 0;
-		if (moveMade)
-		{
-			_playerInstance.Position += new Vector3(inputDir.X, 0, inputDir.Z);
-			_playerInstance.LookAt(_playerInstance.Position + inputDir, Vector3.Up, true);
-		}
 	}
 
 	public override void _PhysicsProcess(double delta)
 	{
 
+	}
+
+	private Tile? GetTile(Vector2I pos)
+	{
+		if (pos.X < 0 || pos.X >= _tiles.GetLength(0))
+			return null;
+		if (pos.Y < 0 || pos.Y >= _tiles.GetLength(1))
+			return null;
+
+		Tile targetTile = (Tile)_tiles.GetValue(pos.X, pos.Y);
+		return targetTile;
+	}
+
+	private bool CanMoveToTile(Vector2I pos)
+	{
+		var targetTile = GetTile(pos);
+		if (targetTile is null) return false;
+		if (!targetTile.IsAlive) return false;
+		return true;
+	}
+
+	private void StepOffTile(Vector2I tilePosition)
+	{
+		var targetTile = GetTile(tilePosition);
+		targetTile?.Interact();
 	}
 }
