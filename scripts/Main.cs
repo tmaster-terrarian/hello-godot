@@ -43,7 +43,20 @@ public partial class Main : Node
 			{
 				for (int z = -Height / 2; z < (Height + 1) / 2; z++)
 				{
-					Tile node = Random.Shared.Next(0, 2) == 0 ? new TileFall() : new TileSolid();
+					var id = Random.Shared.Next(0, 3);
+					Tile node = new Tile();
+					switch (id)
+					{
+						case 0:
+							node = new TileSolid();
+							break;
+						case 1:
+							node = new TileFall();
+							break;
+						case 2:
+							node = new TileBridge();
+							break;
+					}
 
 					Vector3 pos = new(x, 0, z);
 
@@ -101,11 +114,13 @@ public partial class Main : Node
 		return targetTile;
 	}
 
-	private bool CanMoveToTile(Vector2I pos)
+	private bool CanMoveToTile(Vector2I posFrom, Vector2I posTo)
 	{
-		var targetTile = GetTile(pos);
-		if (targetTile is null) return false;
-		if (!targetTile.IsAlive) return false;
+		var fromTile = GetTile(posFrom);
+		var toTile = GetTile(posTo);
+		if (toTile is null) return false;
+		if (fromTile is not null && !fromTile.CanStepOff(posFrom - posTo)) return false;
+		if (!toTile.CanStepOn(posTo - posFrom)) return false;
 		return true;
 	}
 

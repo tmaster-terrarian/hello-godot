@@ -14,7 +14,6 @@ public partial class TileSolid : Tile
     {
         base._Ready();
 
-
         _block = new Node3D();
         _block.RotateY((float)GD.RandRange(-0.05, 0.05));
         AddChild(_block);

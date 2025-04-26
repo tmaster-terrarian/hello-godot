@@ -4,7 +4,7 @@ using Godot;
 
 namespace NewGameProject.scripts;
 
-public partial class Player(Action<Vector2I> onStepOffTile, Func<Vector2I, bool> canMoveToTile) : Node3D
+public partial class Player(Action<Vector2I> onStepOffTile, Func<Vector2I, Vector2I, bool> canMoveToTile) : Node3D
 {
     private PackedScene _player = GD.Load<PackedScene>("res://models/player.glb");
 
@@ -59,8 +59,9 @@ public partial class Player(Action<Vector2I> onStepOffTile, Func<Vector2I, bool>
     {
         _animationTimeTarget += (float)_animationPlayer.CurrentAnimationLength * 0.25f;
 
+        Vector2I currentPosition = new Vector2I((int)Position.X + 4, (int)Position.Z + 4);
         Vector2I targetPosition = new Vector2I((int)position.X + 4, (int)position.Z + 4);
-        if (!canMoveToTile.Invoke(targetPosition))
+        if (!canMoveToTile.Invoke(currentPosition, targetPosition))
             return;
 
         onStepOffTile?.Invoke(new Vector2I((int)Position.X + 4, (int)Position.Z + 4));

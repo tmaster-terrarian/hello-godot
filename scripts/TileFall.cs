@@ -42,4 +42,9 @@ public partial class TileFall : Tile
 
         IsAlive = false;
     }
+
+    public override bool CanStepOn(Vector2I direction)
+    {
+        return IsAlive;
+    }
 }

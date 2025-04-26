@@ -15,4 +15,13 @@ public partial class Tile() : Node3D
     }
 
     public virtual void Interact() { }
+
+    public virtual bool CanStepOff(Vector2I direction)
+    {
+        return true;
+    }
+    public virtual bool CanStepOn(Vector2I direction)
+    {
+        return true;
+    }
 }
