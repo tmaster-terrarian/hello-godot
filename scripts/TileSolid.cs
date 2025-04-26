@@ -45,7 +45,7 @@ public partial class TileSolid : Tile
         var tween = CreateTween()
             .SetEase(Tween.EaseType.Out)
             .SetTrans(Tween.TransitionType.Cubic);
-        var rotY = 0f;
+        float rotY;
         do
         {
             rotY = (float)GD.RandRange(-0.05, 0.05);
