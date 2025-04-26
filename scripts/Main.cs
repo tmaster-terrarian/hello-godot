@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 public partial class Main : Node
@@ -8,7 +9,9 @@ public partial class Main : Node
 	private Node3D _tileGrid;
 
 	private PackedScene _tile = GD.Load<PackedScene>("res://scenes/tile.tscn");
-	private PackedScene _player = GD.Load<PackedScene>("res://scenes/player.tscn");
+	private PackedScene _player = GD.Load<PackedScene>("res://models/player.glb");
+
+	private Node3D _playerInstance;
 
 	private bool[,] _bomb;
 	private bool[,] _flagged;
@@ -29,6 +32,9 @@ public partial class Main : Node
 
 	public override void _Ready()
 	{
+		GetViewport().SetScaling3DMode(Viewport.Scaling3DModeEnum.Fsr2);
+		GetViewport().SetScaling3DScale(1f);
+
 		_bomb = new bool[Width, Height];
 		_flagged = new bool[Width, Height];
 		_tiles = new Tile[Width, Height];
@@ -94,9 +100,13 @@ public partial class Main : Node
 
 		AddChild(_tileGrid);
 
-		var player = _player.Instantiate<Node3D>();
-		player.Position = new Vector3(0, 0.5f, 0);
-		AddChild(player);
+		_playerInstance = _player.Instantiate<Node3D>();
+		_playerInstance.Position = new Vector3(0, 0.5f, 0);
+		_playerInstance.GetNode<AnimationPlayer>("AnimationPlayer").Play("idle");
+		_playerInstance.GetNode<Node3D>("RoboBoy/Skeleton3D/Ice Head").SetVisible(false);
+		_playerInstance.GetNode<Node3D>("RoboBoy/Skeleton3D/Water Head").SetVisible(false);
+		_playerInstance.GetNode<Node3D>("Pick").SetVisible(false);
+		AddChild(_playerInstance);
 	}
 
 	public override void _Process(double delta)
@@ -119,6 +129,23 @@ public partial class Main : Node
 				if (found)
 					break;
 			}
+		}
+
+		var inputDir = Vector3.Zero;
+		if (Input.IsActionJustPressed("move_east"))
+			inputDir = Vector3.Right;
+		else if (Input.IsActionJustPressed("move_west"))
+			inputDir = Vector3.Left;
+		else if (Input.IsActionJustPressed("move_south"))
+			inputDir = Vector3.Back;
+		else if (Input.IsActionJustPressed("move_north"))
+			inputDir = Vector3.Forward;
+
+		var moveMade = inputDir.X != 0 || inputDir.Z != 0;
+		if (moveMade)
+		{
+			_playerInstance.Position += new Vector3(inputDir.X, 0, inputDir.Z);
+			_playerInstance.LookAt(_playerInstance.Position + inputDir, Vector3.Up, true);
 		}
 	}
 

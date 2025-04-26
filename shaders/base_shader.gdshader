@@ -5,7 +5,7 @@ render_mode unshaded;
 
 /*
 	Uniforms;
-	
+
 	'Matcap' is the matcap texture.
 	'Margin' reduces the size of the final UV, to avoid seams.
 	'Is Spatial' allows horizontal wrapping.
@@ -17,7 +17,7 @@ uniform vec3 tint: source_color = vec3(1,1,1);
 
 /*
 	Varyings;
-	
+
 	World-space normal, position, and eye position.
 */
 varying vec3 v_world_normal;
@@ -29,11 +29,20 @@ void vertex() {
 	v_world_normal = (MODEL_NORMAL_MATRIX * NORMAL);
 	v_world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	v_eye_pos = (INV_VIEW_MATRIX * vec4(EYE_OFFSET, 1.0)).xyz;
+	vec4 worldPos = (MODEL_MATRIX * vec4(VERTEX, 1.0));
+	v_world_pos = worldPos.xyz;
+
+	//vec4 posOriginal = POSITION;
+	//vec2 screenResolution = vec2(320, 240);
+	//vec4 vert = vec4(VERTEX, 1.0);
+	//vec4 wvp = PROJECTION_MATRIX * (MODELVIEW_MATRIX * vert);
+	//vec2 snap = vec2(screenResolution.xy / wvp.w);
+	//POSITION = vec4(trunc(wvp.xy * snap) / snap, wvp.z, wvp.w);
 }
 
 void fragment() {
 	vec4 color = MatcapColor(matcap, v_world_normal, v_eye_pos, v_world_pos, margin, is_spatial);
-	
+
 	vec3 worldNormal = (INV_VIEW_MATRIX * vec4(NORMAL.xyz, 0.0)).xyz;
 	float lightDirDot = ((dot(worldNormal, vec3(0, 1, 0)) + 1.0) / 2.0) + 0.2;
 	ALBEDO = COLOR.rgb * color.rgb * tint * lightDirDot;
