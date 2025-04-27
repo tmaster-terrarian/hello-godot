@@ -47,7 +47,7 @@ public partial class LevelEditor(World world) : Node3D
         _playerSpawner.GetNode<Node3D>("Pick").SetVisible(false);
         AddChild(_playerSpawner);
 
-        _grid = Draw3D.Grid(-Vector3.One * 0.5f, _levelData.Width, _levelData.Height, Colors.White);
+        _grid = Draw3D.Grid(-Vector3.One * 0.5f, _levelData.Width, _levelData.Height, new Color(Colors.White, 0.25f));
         _grid.RotateX(Mathf.DegToRad(90));
         AddChild(_grid);
     }

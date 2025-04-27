@@ -40,6 +40,7 @@ public static class Draw3D
         immediateMesh.SurfaceEnd();
 
         material.ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded;
+        material.Transparency = BaseMaterial3D.TransparencyEnum.Alpha;
         material.AlbedoColor = color ?? Colors.WhiteSmoke;
 
         (Engine.GetMainLoop() as SceneTree)?.Root.AddChild(meshInstance);
