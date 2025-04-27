@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://d2p17he84fook"]
+[gd_scene load_steps=7 format=3 uid="uid://d2p17he84fook"]
 
 [ext_resource type="Script" uid="uid://blker6t3tfdyp" path="res://scripts/Main.cs" id="1_0wfyh"]
+[ext_resource type="PackedScene" uid="uid://boobfb7hswqop" path="res://models/tile_bridge.glb" id="3_sugp2"]
 [ext_resource type="Shader" uid="uid://d2jebcsjlmhr0" path="res://shaders/gradient_sky.gdshader" id="4_jyhfs"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_tbgi4"]
@@ -30,3 +31,6 @@ size = 10.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_jyhfs")
+
+[node name="tile_bridge" parent="." instance=ExtResource("3_sugp2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.14058, 0, -14.3263)

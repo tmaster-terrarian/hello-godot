@@ -29,6 +29,7 @@ public partial class TileFall : Tile
     {
         base._Process(delta);
 
+        if (!IsAlive) return;
         _time += (float)delta;
         _block.Rotation = new Vector3(0, Mathf.Sin(_time * 12) * 0.05f, 0);
     }
@@ -36,9 +37,14 @@ public partial class TileFall : Tile
     public override void Interact()
     {
         var tween = CreateTween()
-            .SetEase(Tween.EaseType.Out)
+            .SetEase(Tween.EaseType.In)
             .SetTrans(Tween.TransitionType.Cubic);
         tween.TweenProperty(_block, "scale", new Vector3(0, 0, 0), 0.2f);
+
+        var tween2 = CreateTween()
+            .SetEase(Tween.EaseType.In)
+            .SetTrans(Tween.TransitionType.Back);
+        tween2.TweenProperty(_block, "rotation", new Vector3(0, Mathf.DegToRad(90), 0), 0.2f);
 
         IsAlive = false;
     }

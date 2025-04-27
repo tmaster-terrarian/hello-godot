@@ -35,6 +35,21 @@ public partial class World : Node3D
         GenerateRandomLevel();
     }
 
+    public override void _Process(double delta)
+    {
+        base._Process(delta);
+
+        for (var i = 0; i < _tiles.Length; i++)
+        {
+            if (_tiles[i] is null) continue;
+
+            if (GetTileIndex(Mathf.RoundToInt(_playerInstance.Position.X), Mathf.RoundToInt(_playerInstance.Position.Z)) == i)
+                _tiles[i].IsStoodOn = true;
+            else
+                _tiles[i].IsStoodOn = false;
+        }
+    }
+
     public void GenerateLevel(LevelData levelData)
     {
         Width = levelData.Width;
@@ -59,7 +74,7 @@ public partial class World : Node3D
                 continue;
 
             var pos = GetTilePosition(i);
-            node.Position = new Vector3(pos.X, 0, pos.Y);
+            node.Position = new Vector3(pos.X, Random.Shared.NextSingle() * -5f - 1f, pos.Y);
             node.Name = $"tile_{pos.X}_{pos.Y}";
 
             _tiles[i] = node;

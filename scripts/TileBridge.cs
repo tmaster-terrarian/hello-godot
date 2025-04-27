@@ -28,6 +28,11 @@ public partial class TileBridge : Tile
         Mesh = model.GetNode("Cube") as MeshInstance3D;
     }
 
+    public override void _Process(double delta)
+    {
+        base._Process(delta);
+    }
+
     public override void Interact()
     {
         Direction = Direction == Directions.Horizontal ? Directions.Vertical : Directions.Horizontal;
