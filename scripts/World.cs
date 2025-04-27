@@ -67,11 +67,13 @@ public partial class World : Node3D
 
         for (var i = 0; i < levelData.Tiles.Length; i++)
         {
-            var tileIndex = levelData.Tiles[i];
-            Tile node = MakeTile(tileIndex);
+            var (tileIndex, tileMetadata) = MathUtil.Split(levelData.Tiles[i]);
 
+            Tile node = MakeTile(tileIndex);
             if (node is null)
                 continue;
+
+            node.Metadata = tileMetadata;
 
             var pos = GetTilePosition(i);
             node.Position = new Vector3(pos.X, Random.Shared.NextSingle() * -5f - 1f, pos.Y);
@@ -96,10 +98,19 @@ public partial class World : Node3D
     {
         Width = Random.Shared.Next(3, 9);
         Height = Random.Shared.Next(3, 9);
-        int[] tileListTest = new int[Width * Height];
+        uint[] tileListTest = new uint[Width * Height];
         for (int x = 0; x < Width; x++)
         for (int y = 0; y < Height; y++)
-            tileListTest[GetTileIndex(x, y)] = Random.Shared.Next(0, 4);
+        {
+            int tileTypeIndex = Random.Shared.Next(0, 4);
+            var type = (TileTypes)tileTypeIndex;
+
+            ushort metadata = ushort.MinValue;
+            if (type == TileTypes.Bridge)
+                metadata = (ushort)Random.Shared.Next();
+
+            tileListTest[GetTileIndex(x, y)] = MathUtil.Join(metadata, (ushort)type);
+        }
 
         GenerateLevel(new LevelData()
         {
@@ -118,7 +129,7 @@ public partial class World : Node3D
     public bool IsPositionInMap(int x, int y) => x >= 0 && y >= 0 && x < Width && y < Height;
     public bool IsPositionInMap(Vector2I pos) => IsPositionInMap(pos.X, pos.Y);
 
-    public Tile MakeTile(TileTypes type)
+    public Tile? MakeTile(TileTypes type)
     {
         return type switch
         {
@@ -129,7 +140,7 @@ public partial class World : Node3D
         };
     }
 
-    public Tile MakeTile(int typeIndex)
+    public Tile? MakeTile(int typeIndex)
     {
         return MakeTile((TileTypes)typeIndex);
     }

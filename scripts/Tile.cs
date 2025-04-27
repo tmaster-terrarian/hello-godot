@@ -1,8 +1,10 @@
 using Godot;
 using System;
+using NewGameProject.Api;
 
 public partial class Tile() : Node3D
 {
+    public ushort Metadata;
     public MeshInstance3D Mesh { get; protected set; }
     public bool ShowAlternate { get; set; }
     public bool IsAlive { get; protected set; } = true;
@@ -16,8 +18,10 @@ public partial class Tile() : Node3D
         ShowAlternate = ((int)Position.X % 2 == 1) ^ ((int)Position.Z % 2 == 1);
         Mesh.SetInstanceShaderParameter("brightness", ShowAlternate ? 0.5 : 1.0);
 
-        Position = Position with { Y = (float)Mathf.Lerp(Position.Y, IsStoodOn ? 0.0f : 0.1f, delta *
-            (IsStoodOn ? 40f : 10f)) };
+        Position = Position with
+        {
+            Y = MathUtil.ExpDecay(Position.Y, IsStoodOn ? 0.0f : 0.1f, IsStoodOn ? 40f : 10f, (float)delta)
+        };
     }
 
     public virtual void Interact() { }

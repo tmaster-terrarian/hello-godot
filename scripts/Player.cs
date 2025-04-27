@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Godot;
+using NewGameProject.Api;
 
 namespace NewGameProject.Scripts;
 
@@ -51,7 +52,7 @@ public partial class Player(Action<Vector2I> onStepOffTile, Func<Vector2I, Vecto
             LookAt(Position + inputDir, Vector3.Up, true);
         }
 
-        _animationTime = Mathf.Lerp(_animationTime, _animationTimeTarget, (float)delta * 20f);
+        _animationTime = MathUtil.ExpDecay(_animationTime, _animationTimeTarget, 16f, (float)delta);
         _animationPlayer.Seek(_animationTime, true);
     }
 
