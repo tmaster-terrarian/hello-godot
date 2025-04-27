@@ -1,7 +1,7 @@
 using System;
 using Godot;
 
-namespace NewGameProject.scripts;
+namespace NewGameProject.Scripts;
 
 public partial class TileSolid : Tile
 {

@@ -1,6 +1,6 @@
 using Godot;
 
-namespace NewGameProject.scripts;
+namespace NewGameProject.Scripts;
 
 public partial class TileFall : Tile
 {

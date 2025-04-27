@@ -53,7 +53,7 @@ void fragment() {
 	hsv.y = mix(hsv.y, 1.0, 1.0 - brightness);
 	hsv.z = mix(hsv.z, hsv.z * 0.8, 1.0 - brightness);
 	vec3 tintAdjusted = hsv2rgb(hsv);
-	ALBEDO = COLOR.rgb * color.rgb * tintAdjusted * lightDirDot;
+	ALBEDO = COLOR.rgb * color.rgb * tintAdjusted * lightDirDot * 1.5;
 }
 
 //void light() {

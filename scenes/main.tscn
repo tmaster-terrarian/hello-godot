@@ -10,18 +10,23 @@ shader = ExtResource("4_jyhfs")
 sky_material = SubResource("ShaderMaterial_tbgi4")
 
 [sub_resource type="Environment" id="Environment_jyhfs"]
+background_mode = 1
+background_color = Color(0.24293, 0.334491, 0.357361, 1)
 sky = SubResource("Sky_tefeu")
 glow_bloom = 1.0
 
-[node name="Main" type="Node3D"]
+[node name="Main" type="Node3D" node_paths=PackedStringArray("CameraRoot")]
 script = ExtResource("1_0wfyh")
+CameraRoot = NodePath("Camera Root")
 
-[node name="Camera3D" type="Camera3D" parent="."]
+[node name="Camera Root" type="Node3D" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="Camera Root"]
 transform = Transform3D(1, 0, 0, 0, 0.398925, 0.916983, 0, -0.916983, 0.398925, -3.8147e-06, 23.4459, 10.0725)
 fov = 22.0
 size = 10.0
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Camera3D"]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Camera Root/Camera3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_jyhfs")

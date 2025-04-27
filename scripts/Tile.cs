@@ -11,6 +11,7 @@ public partial class Tile() : Node3D
     {
         base._Process(delta);
 
+        ShowAlternate = ((int)Position.X % 2 == 1) ^ ((int)Position.Z % 2 == 1);
         Mesh.SetInstanceShaderParameter("brightness", ShowAlternate ? 0.5 : 1.0);
     }
 

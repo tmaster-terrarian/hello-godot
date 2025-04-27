@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Godot;
 
-namespace NewGameProject.scripts;
+namespace NewGameProject.Scripts;
 
 public partial class Player(Action<Vector2I> onStepOffTile, Func<Vector2I, Vector2I, bool> canMoveToTile) : Node3D
 {
@@ -59,12 +59,12 @@ public partial class Player(Action<Vector2I> onStepOffTile, Func<Vector2I, Vecto
     {
         _animationTimeTarget += (float)_animationPlayer.CurrentAnimationLength * 0.25f;
 
-        Vector2I currentPosition = new Vector2I((int)Position.X + 4, (int)Position.Z + 4);
-        Vector2I targetPosition = new Vector2I((int)position.X + 4, (int)position.Z + 4);
+        Vector2I currentPosition = new Vector2I((int)Position.X, (int)Position.Z);
+        Vector2I targetPosition = new Vector2I((int)position.X, (int)position.Z);
         if (!canMoveToTile.Invoke(currentPosition, targetPosition))
             return;
 
-        onStepOffTile?.Invoke(new Vector2I((int)Position.X + 4, (int)Position.Z + 4));
+        onStepOffTile?.Invoke(new Vector2I((int)Position.X, (int)Position.Z));
         _moveTween = CreateTween()
             .SetTrans(Tween.TransitionType.Cubic)
             .SetEase(Tween.EaseType.Out);
