@@ -111,6 +111,7 @@ public partial class LevelEditor(World world) : Node3D
         else if (Input.IsActionJustPressed("move_north"))
             inputDir = Vector2I.Up;
 
+        _selectionBox.Position += inputDir.ToVector3(true, 0f) * 0.2f;
         _selectionBoxPosition += inputDir;
         _selectionBoxPosition.X = MathUtil.ClampToInt(_selectionBoxPosition.X, 0, _levelData.Width - 1);
         _selectionBoxPosition.Y = MathUtil.ClampToInt(_selectionBoxPosition.Y, 0, _levelData.Height - 1);
