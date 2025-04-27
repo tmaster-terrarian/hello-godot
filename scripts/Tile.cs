@@ -26,7 +26,8 @@ public partial class Tile() : Node3D
         };
     }
 
-    public virtual void Interact() { }
+    public virtual void OnStepOn() { }
+    public virtual void OnStepOff() { }
 
     public virtual bool CanStepOff(Vector2I direction)
     {

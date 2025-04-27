@@ -166,7 +166,7 @@ public partial class World : Node3D
     {
         DespawnPlayer();
 
-        _playerInstance = new Player(StepOffTile, CanMoveToTile);
+        _playerInstance = new Player(this);
         _playerInstance.Position = new Vector3(LevelData.PlayerLocation.X, 0.5f, LevelData.PlayerLocation.Y);
         AddChild(_playerInstance);
     }
@@ -221,9 +221,15 @@ public partial class World : Node3D
         return true;
     }
 
+    public void StepOnTile(Vector2I tilePosition)
+    {
+        var targetTile = GetTile(tilePosition);
+        targetTile?.OnStepOn();
+    }
+
     public void StepOffTile(Vector2I tilePosition)
     {
         var targetTile = GetTile(tilePosition);
-        targetTile?.Interact();
+        targetTile?.OnStepOff();
     }
 }

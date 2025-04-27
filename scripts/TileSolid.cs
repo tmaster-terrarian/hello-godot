@@ -39,7 +39,7 @@ public partial class TileSolid : Tile
         }
     }
 
-    public override void Interact()
+    public override void OnStepOff()
     {
         var tween = CreateTween()
             .SetEase(Tween.EaseType.Out)

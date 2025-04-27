@@ -38,7 +38,7 @@ public partial class TileFall : Tile
         _sphere.SetInstanceShaderParameter("brightness", ShowAlternate ? 0.5 : 1.0);
     }
 
-    public override void Interact()
+    public override void OnStepOff()
     {
         var tween = CreateTween()
             .SetEase(Tween.EaseType.In)

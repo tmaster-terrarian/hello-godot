@@ -42,7 +42,12 @@ public partial class TileBridge : Tile
         };
     }
 
-    public override void Interact()
+    // public override void OnStepOn()
+    // {
+    //     Direction = Direction == Directions.Horizontal ? Directions.Vertical : Directions.Horizontal;
+    // }
+
+    public override void OnStepOff()
     {
         Direction = Direction == Directions.Horizontal ? Directions.Vertical : Directions.Horizontal;
     }
