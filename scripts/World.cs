@@ -112,12 +112,18 @@ public partial class World : Node3D
             tileListTest[GetTileIndex(x, y)] = MathUtil.Join(metadata, (ushort)type);
         }
 
+        Vector2I playerLocation;
+        do
+        {
+            playerLocation = new Vector2I(Random.Shared.Next(0, Width - 1), Random.Shared.Next(0, Height - 1));
+        } while (tileListTest[GetTileIndex(playerLocation.X, playerLocation.Y)] == 0);
+
         GenerateLevel(new LevelData()
         {
             Width = Width,
             Height = Height,
             Tiles = tileListTest,
-            PlayerLocation = new Vector2I(Random.Shared.Next(0, Width - 1), Random.Shared.Next(0, Height - 1))
+            PlayerLocation = playerLocation
         });
     }
 
