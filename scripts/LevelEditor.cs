@@ -8,6 +8,7 @@ public partial class LevelEditor(World world) : Node3D
 {
     private PackedScene _selectionBoxModel = GD.Load<PackedScene>("res://models/selection_box.glb");
     private PackedScene _playerSpawnerModel = GD.Load<PackedScene>("res://models/player.glb");
+    private PackedScene _gridSquareModel = GD.Load<PackedScene>("res://models/grid_square.glb");
 
     public bool IsPlayMode { get; private set; }
 
@@ -17,6 +18,7 @@ public partial class LevelEditor(World world) : Node3D
     private Vector2I _selectionBoxPosition;
 
     private Node3D _playerSpawner;
+    private Node3D _grid;
 
     private float _time;
 
@@ -44,6 +46,10 @@ public partial class LevelEditor(World world) : Node3D
         _playerSpawner.GetNode<Node3D>("RoboBoy/Skeleton3D/Water Head").SetVisible(false);
         _playerSpawner.GetNode<Node3D>("Pick").SetVisible(false);
         AddChild(_playerSpawner);
+
+        _grid = Draw3D.Grid(-Vector3.One * 0.5f, _levelData.Width, _levelData.Height, Colors.White);
+        _grid.RotateX(Mathf.DegToRad(90));
+        AddChild(_grid);
     }
 
     public override void _Process(double delta)
@@ -70,6 +76,7 @@ public partial class LevelEditor(World world) : Node3D
         var spawnPos = new Vector3(_levelData.PlayerLocation.X, 0.5f, _levelData.PlayerLocation.Y);
         _playerSpawner.Position = MathUtil.ExpDecay(_playerSpawner.Position, spawnPos, 16f, (float)delta);
         _playerSpawner.SetVisible(!IsPlayMode);
+        _grid.SetVisible(!IsPlayMode);
         _selectionBox.SetVisible(!IsPlayMode);
         if (!IsPlayMode)
         {
@@ -105,6 +112,8 @@ public partial class LevelEditor(World world) : Node3D
             inputDir = Vector2I.Up;
 
         _selectionBoxPosition += inputDir;
+        _selectionBoxPosition.X = MathUtil.ClampToInt(_selectionBoxPosition.X, 0, _levelData.Width - 1);
+        _selectionBoxPosition.Y = MathUtil.ClampToInt(_selectionBoxPosition.Y, 0, _levelData.Height - 1);
 
         HandleEdits();
     }

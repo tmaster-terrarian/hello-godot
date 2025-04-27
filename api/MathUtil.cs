@@ -381,4 +381,9 @@ public static class MathUtil
     {
         return (uint)(first << 16) | (uint)(second & 0xffff);
     }
+
+    public static Godot.Vector3 ToVector3(this Godot.Vector2I vector, bool yTangent = false, float tangent = 0f)
+    {
+        return yTangent ? new Godot.Vector3(vector.X, tangent, vector.Y) : new Godot.Vector3(vector.X, vector.Y, tangent);
+    }
 }

@@ -13,12 +13,15 @@ public partial class Tile() : Node3D
 
     public bool IsDeleting { get; private set; }
 
+    protected void FinishInitialization()
+    {
+        ShowAlternate = ((int)Position.X % 2 == 1) ^ ((int)Position.Z % 2 == 1);
+        Mesh.SetInstanceShaderParameter("brightness", ShowAlternate ? 0.5 : 1.0);
+    }
+
     public override void _Process(double delta)
     {
         base._Process(delta);
-
-        ShowAlternate = ((int)Position.X % 2 == 1) ^ ((int)Position.Z % 2 == 1);
-        Mesh.SetInstanceShaderParameter("brightness", ShowAlternate ? 0.5 : 1.0);
 
         Position = Position with
         {

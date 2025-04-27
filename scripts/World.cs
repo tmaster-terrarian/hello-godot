@@ -52,14 +52,13 @@ public partial class World : Node3D
     {
         base._Process(delta);
 
+        if (_playerInstance is null || !IsInstanceValid(_playerInstance)) return;
         for (var i = 0; i < _tiles.Length; i++)
         {
-            if (_tiles[i] is null) continue;
-
-            if (LevelData.GetTileIndex(Mathf.RoundToInt(_playerInstance.Position.X), Mathf.RoundToInt(_playerInstance.Position.Z)) == i)
-                _tiles[i].IsStoodOn = true;
-            else
-                _tiles[i].IsStoodOn = false;
+            var tile = _tiles[i];
+            if (tile is null) continue;
+            if (!IsInstanceValid(tile)) continue;
+            tile.IsStoodOn = LevelData.GetTileIndex(Mathf.RoundToInt(_playerInstance.Position.X), Mathf.RoundToInt(_playerInstance.Position.Z)) == i;
         }
     }
 

@@ -21,6 +21,8 @@ public partial class TileSolid : Tile
         var model = _tile.Instantiate<Node3D>();
         _block.AddChild(model);
         Mesh = model.GetNode("Cube") as MeshInstance3D;
+
+        FinishInitialization();
     }
 
     public override void _Process(double delta)

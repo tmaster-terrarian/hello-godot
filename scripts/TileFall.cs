@@ -36,6 +36,8 @@ public partial class TileFall : Tile
         _time += (float)delta;
         _block.Rotation = new Vector3(0, Mathf.Sin(_time * 12) * 0.05f, 0);
         _sphere.SetInstanceShaderParameter("brightness", ShowAlternate ? 0.5 : 1.0);
+
+        FinishInitialization();
     }
 
     public override void OnStepOff()

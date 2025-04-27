@@ -29,6 +29,8 @@ public partial class TileBridge : Tile
         Mesh = model.GetNode("Cube") as MeshInstance3D;
 
         _block.Rotation = new Vector3(0f, Direction == Directions.Horizontal ? Mathf.DegToRad(90) : 0f, 0f);
+
+        FinishInitialization();
     }
 
     public override void _Process(double delta)
