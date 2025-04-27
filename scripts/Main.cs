@@ -12,6 +12,9 @@ public partial class Main : Node
 	[Export(PropertyHint.NodeType, "Node3D")]
 	public Node3D CameraRoot;
 
+	[Export(PropertyHint.NodeType, "WorldEnvironment")]
+	public WorldEnvironment WorldEnvironment;
+
 	private World _world;
 
 	public override void _Ready()
@@ -21,6 +24,17 @@ public partial class Main : Node
 
 		_world = new World { Name = "world", OnGenerateWorld = CenterCameraOnWorld };
 		AddChild(_world);
+	}
+
+	public override void _Process(double delta)
+	{
+		if (Input.IsActionJustPressed("test_click"))
+		{
+			WorldEnvironment.Environment.BackgroundColor.ToHsv(out _, out float saturation,
+				out float value);
+			WorldEnvironment.Environment.BackgroundColor =
+				Color.FromHsv(Random.Shared.NextSingle(), saturation, value);
+		}
 	}
 
 	public void CenterCameraOnWorld()

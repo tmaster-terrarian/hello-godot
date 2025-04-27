@@ -15,9 +15,10 @@ background_color = Color(0.24293, 0.334491, 0.357361, 1)
 sky = SubResource("Sky_tefeu")
 glow_bloom = 1.0
 
-[node name="Main" type="Node3D" node_paths=PackedStringArray("CameraRoot")]
+[node name="Main" type="Node3D" node_paths=PackedStringArray("CameraRoot", "WorldEnvironment")]
 script = ExtResource("1_0wfyh")
 CameraRoot = NodePath("Camera Root")
+WorldEnvironment = NodePath("WorldEnvironment")
 
 [node name="Camera Root" type="Node3D" parent="."]
 
