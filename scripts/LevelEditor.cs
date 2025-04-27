@@ -26,11 +26,13 @@ public partial class LevelEditor(World world) : Node3D
     {
         base._Ready();
 
+        int w = 18;
+        int h = 13;
         _levelData = new LevelData()
         {
-            Width = 6,
-            Height = 6,
-            Tiles = new uint[6 * 6],
+            Width = w,
+            Height = h,
+            Tiles = new uint[w * h],
             PlayerLocation = Vector2I.Zero,
         };
 
@@ -135,8 +137,10 @@ public partial class LevelEditor(World world) : Node3D
         if (Input.IsKeyPressed(Key.Key0)) addIndex = 0;
         if (Input.IsKeyPressed(Key.Key1)) addIndex = 1;
         if (Input.IsKeyPressed(Key.Key2)) addIndex = 2;
-        if (Input.IsKeyPressed(Key.Key3)) addIndex = MathUtil.Join(0, 3);
-        if (Input.IsKeyPressed(Key.Key4)) addIndex = MathUtil.Join(1, 3);
+        if (Input.IsKeyPressed(Key.Key3)) addIndex = MathUtil.Join(0b00, 3);
+        if (Input.IsKeyPressed(Key.Key4)) addIndex = MathUtil.Join(0b01, 3);
+        if (Input.IsKeyPressed(Key.Key5)) addIndex = MathUtil.Join(0b10, 3);
+        if (Input.IsKeyPressed(Key.Key6)) addIndex = MathUtil.Join(0b11, 3);
 
         if (addIndex < uint.MaxValue)
         {

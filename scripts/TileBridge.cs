@@ -6,6 +6,8 @@ namespace NewGameProject.Scripts;
 public partial class TileBridge : Tile
 {
     private PackedScene _tile = GD.Load<PackedScene>("res://models/tile_bridge.glb");
+    private Material _matWood = GD.Load<Material>("res://materials/tile_bridge.tres");
+    private Material _matMetal = GD.Load<Material>("res://materials/tile_bridge_metal.tres");
 
     private Node3D _block;
 
@@ -14,11 +16,16 @@ public partial class TileBridge : Tile
         Vertical,
         Horizontal,
     }
-    public Directions Direction { get => (Directions)(Metadata & 1); set => Metadata = (ushort)value; }
+
+    public Directions Direction { get; set; }
+    public bool IsMetal { get; set; }
 
     public override void _Ready()
     {
         base._Ready();
+
+        Direction = (Directions)(Metadata & 1);
+        IsMetal = ((Metadata >> 1) & 1) != 0;
 
         _block = new Node3D();
         AddChild(_block);
@@ -26,6 +33,7 @@ public partial class TileBridge : Tile
         var model = _tile.Instantiate<Node3D>();
         _block.AddChild(model);
         Mesh = model.GetNode("Cube") as MeshInstance3D;
+        Mesh?.SetMaterialOverride(IsMetal ? _matMetal : _matWood);
 
         _block.Rotation = new Vector3(0f, Direction == Directions.Horizontal ? Mathf.DegToRad(90) : 0f, 0f);
 
@@ -43,10 +51,11 @@ public partial class TileBridge : Tile
         };
     }
 
-    // public override void OnStepOn()
-    // {
-    //     Direction = Direction == Directions.Horizontal ? Directions.Vertical : Directions.Horizontal;
-    // }
+    public override void OnStepOn()
+    {
+        if (!IsMetal) return;
+        Direction = Direction == Directions.Horizontal ? Directions.Vertical : Directions.Horizontal;
+    }
 
     public override void OnStepOff()
     {
