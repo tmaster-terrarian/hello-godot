@@ -7,27 +7,15 @@ namespace NewGameProject.Scripts;
 
 public partial class World : Node3D
 {
-    private LevelData _levelData;
-    public LevelData LevelData
-    {
-        get => _levelData;
-        set
-        {
-            _levelData = value;
-            GenerateLevel(value);
-        }
-    }
+    public LevelData LevelData { get; private set; }
 
     public Action OnGenerateWorld;
 
     private Node3D _tileNodes;
     private Tile[] _tiles;
 
-    [Export]
-    public int Width { get; set; } = 9;
-
-    [Export]
-    public int Height { get; set; } = 9;
+    public int Width => LevelData.Width;
+    public int Height => LevelData.Height;
 
     private Node3D _playerInstance;
 
@@ -69,8 +57,7 @@ public partial class World : Node3D
 
     public void GenerateLevel(LevelData levelData)
     {
-        Width = levelData.Width;
-        Height = levelData.Height;
+        LevelData = levelData;
 
         if (_tiles is not null)
         {
@@ -120,11 +107,11 @@ public partial class World : Node3D
 
     public void GenerateRandomLevel()
     {
-        Width = Random.Shared.Next(3, 9);
-        Height = Random.Shared.Next(3, 9);
-        uint[] tileListTest = new uint[Width * Height];
-        for (int x = 0; x < Width; x++)
-        for (int y = 0; y < Height; y++)
+        var width = Random.Shared.Next(3, 9);
+        var height = Random.Shared.Next(3, 9);
+        uint[] tileListTest = new uint[width * height];
+        for (int x = 0; x < width; x++)
+        for (int y = 0; y < height; y++)
         {
             int tileTypeIndex = Random.Shared.Next(0, 4);
             var type = (TileTypes)tileTypeIndex;
@@ -139,16 +126,17 @@ public partial class World : Node3D
         Vector2I playerLocation;
         do
         {
-            playerLocation = new Vector2I(Random.Shared.Next(0, Width - 1), Random.Shared.Next(0, Height - 1));
+            playerLocation = new Vector2I(Random.Shared.Next(0, width - 1), Random.Shared.Next(0, height - 1));
         } while (tileListTest[LevelData.GetTileIndex(playerLocation.X, playerLocation.Y)] == 0);
 
-        LevelData = new LevelData()
+        var levelData = new LevelData()
         {
-            Width = 4,
-            Height = 4,
-            Tiles = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            Width = width,
+            Height = height,
+            Tiles = tileListTest,
             PlayerLocation = playerLocation
         };
+        GenerateLevel(levelData);
     }
 
     public void StartLevel()

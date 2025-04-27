@@ -20,7 +20,6 @@ public partial class TileBridge : Tile
     {
         base._Ready();
 
-        RotateY((float)GD.RandRange(-0.05, 0.05));
         _block = new Node3D();
         AddChild(_block);
 

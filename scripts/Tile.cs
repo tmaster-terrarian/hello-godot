@@ -17,6 +17,12 @@ public partial class Tile() : Node3D
     {
         ShowAlternate = ((int)Position.X % 2 == 1) ^ ((int)Position.Z % 2 == 1);
         Mesh.SetInstanceShaderParameter("brightness", ShowAlternate ? 0.5 : 1.0);
+
+        float randomRange = 0.1f;
+        float randomRangeSmall = 0.025f;
+        RotateY((float)GD.RandRange(-randomRange, randomRange));
+        RotateX((float)GD.RandRange(-randomRangeSmall, randomRangeSmall));
+        RotateZ((float)GD.RandRange(-randomRangeSmall, randomRangeSmall));
     }
 
     public override void _Process(double delta)

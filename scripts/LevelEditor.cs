@@ -28,9 +28,9 @@ public partial class LevelEditor(World world) : Node3D
 
         _levelData = new LevelData()
         {
-            Width = 4,
-            Height = 4,
-            Tiles = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            Width = 6,
+            Height = 6,
+            Tiles = new uint[6 * 6],
             PlayerLocation = Vector2I.Zero,
         };
 
@@ -50,6 +50,8 @@ public partial class LevelEditor(World world) : Node3D
         _grid = Draw3D.Grid(-Vector3.One * 0.5f, _levelData.Width, _levelData.Height, new Color(Colors.White, 0.25f));
         _grid.RotateX(Mathf.DegToRad(90));
         AddChild(_grid);
+
+        world.GenerateLevel(_levelData);
     }
 
     public override void _Process(double delta)
@@ -94,7 +96,7 @@ public partial class LevelEditor(World world) : Node3D
             else
             {
                 world.DespawnPlayer();
-                world.LevelData = _levelData;
+                world.GenerateLevel(_levelData);
             }
         }
     }

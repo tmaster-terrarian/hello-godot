@@ -17,8 +17,6 @@ public partial class TileFall : Tile
 
         _time = (float)GD.RandRange(0.0, 300.0);
 
-        RotateY((float)GD.RandRange(-0.1, 0.1));
-
         _block = new Node3D();
         AddChild(_block);
 
@@ -26,6 +24,8 @@ public partial class TileFall : Tile
         _block.AddChild(model);
         Mesh = model.GetNode("Cube") as MeshInstance3D;
         _sphere = model.GetNode("Sphere") as MeshInstance3D;
+
+        FinishInitialization();
     }
 
     public override void _Process(double delta)
@@ -36,8 +36,6 @@ public partial class TileFall : Tile
         _time += (float)delta;
         _block.Rotation = new Vector3(0, Mathf.Sin(_time * 12) * 0.05f, 0);
         _sphere.SetInstanceShaderParameter("brightness", ShowAlternate ? 0.5 : 1.0);
-
-        FinishInitialization();
     }
 
     public override void OnStepOff()

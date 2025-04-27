@@ -15,7 +15,6 @@ public partial class TileSolid : Tile
         base._Ready();
 
         _block = new Node3D();
-        _block.RotateY((float)GD.RandRange(-0.05, 0.05));
         AddChild(_block);
 
         var model = _tile.Instantiate<Node3D>();
@@ -51,7 +50,7 @@ public partial class TileSolid : Tile
         {
             rotY = (float)GD.RandRange(-0.05, 0.05);
         }
-        while (Math.Abs(rotY - _block.Rotation.Y) < 0.05);
+        while (Math.Abs(rotY - _block.Rotation.Y) < 0.01);
         tween.TweenProperty(_block, "rotation", new Vector3(0, rotY, 0), 0.1f);
         _shakeTime = 0.2;
     }
