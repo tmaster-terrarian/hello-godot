@@ -7,6 +7,17 @@ namespace NewGameProject.Scripts;
 
 public partial class World : Node3D
 {
+    private LevelData _levelData;
+    public LevelData LevelData
+    {
+        get => _levelData;
+        set
+        {
+            _levelData = value;
+            GenerateLevel(value);
+        }
+    }
+
     public Action OnGenerateWorld;
 
     private Node3D _tileNodes;
@@ -33,6 +44,8 @@ public partial class World : Node3D
         _tileNodes = new Node3D() { Name = "tiles" };
 
         GenerateRandomLevel();
+
+        AddChild(new LevelEditor(this));
     }
 
     public override void _Process(double delta)
@@ -43,11 +56,16 @@ public partial class World : Node3D
         {
             if (_tiles[i] is null) continue;
 
-            if (GetTileIndex(Mathf.RoundToInt(_playerInstance.Position.X), Mathf.RoundToInt(_playerInstance.Position.Z)) == i)
+            if (LevelData.GetTileIndex(Mathf.RoundToInt(_playerInstance.Position.X), Mathf.RoundToInt(_playerInstance.Position.Z)) == i)
                 _tiles[i].IsStoodOn = true;
             else
                 _tiles[i].IsStoodOn = false;
         }
+    }
+
+    public void SetLevelData(LevelData levelData)
+    {
+        LevelData = levelData;
     }
 
     public void GenerateLevel(LevelData levelData)
@@ -60,6 +78,7 @@ public partial class World : Node3D
             foreach (var tile in _tiles)
             {
                 if (tile is null) continue;
+                if (!IsInstanceValid(tile)) continue;
                 tile.QueueFree();
             }
         }
@@ -67,31 +86,37 @@ public partial class World : Node3D
 
         for (var i = 0; i < levelData.Tiles.Length; i++)
         {
-            var (tileIndex, tileMetadata) = MathUtil.Split(levelData.Tiles[i]);
-
-            Tile node = MakeTile(tileIndex);
-            if (node is null)
-                continue;
-
-            node.Metadata = tileMetadata;
-
-            var pos = GetTilePosition(i);
-            node.Position = new Vector3(pos.X, Random.Shared.NextSingle() * -5f - 1f, pos.Y);
-            node.Name = $"tile_{pos.X}_{pos.Y}";
-
-            _tiles[i] = node;
-
-            AddChild(node);
+            GenerateTile(i, levelData.Tiles[i]);
         }
 
-        if (_playerInstance is not null)
-            _playerInstance.QueueFree();
-
-        _playerInstance = new Player(StepOffTile, CanMoveToTile);
-        _playerInstance.Position = new Vector3(levelData.PlayerLocation.X, 0.5f, levelData.PlayerLocation.Y);
-        AddChild(_playerInstance);
-
         OnGenerateWorld?.Invoke();
+    }
+
+    public Tile? GenerateTile(int index, uint tileData)
+    {
+        var (tileIndex, tileMetadata) = MathUtil.Split(tileData);
+
+        if (_tiles.GetValue(index) is Tile existingTile)
+        {
+            if (IsInstanceValid(existingTile) && !existingTile.IsDeleting)
+                existingTile.QueueFree();
+        }
+
+        Tile node = MakeTile(tileIndex);
+        if (node is null)
+            return null;
+
+        node.Metadata = tileMetadata;
+
+        var pos = LevelData.GetTilePosition(index);
+        node.Position = new Vector3(pos.X, 0f, pos.Y);
+        node.Name = $"tile_{pos.X}_{pos.Y}";
+
+        _tiles[index] = node;
+
+        AddChild(node);
+
+        return node;
     }
 
     public void GenerateRandomLevel()
@@ -109,31 +134,49 @@ public partial class World : Node3D
             if (type == TileTypes.Bridge)
                 metadata = (ushort)Random.Shared.Next();
 
-            tileListTest[GetTileIndex(x, y)] = MathUtil.Join(metadata, (ushort)type);
+            tileListTest[LevelData.GetTileIndex(x, y)] = MathUtil.Join(metadata, (ushort)type);
         }
 
         Vector2I playerLocation;
         do
         {
             playerLocation = new Vector2I(Random.Shared.Next(0, Width - 1), Random.Shared.Next(0, Height - 1));
-        } while (tileListTest[GetTileIndex(playerLocation.X, playerLocation.Y)] == 0);
+        } while (tileListTest[LevelData.GetTileIndex(playerLocation.X, playerLocation.Y)] == 0);
 
-        GenerateLevel(new LevelData()
+        LevelData = new LevelData()
         {
-            Width = Width,
-            Height = Height,
-            Tiles = tileListTest,
+            Width = 4,
+            Height = 4,
+            Tiles = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             PlayerLocation = playerLocation
-        });
+        };
     }
 
-    public int GetTileIndex(int x, int y) => y * Width + x;
-    public int GetTileIndex(Vector2I pos) => GetTileIndex(pos.X, pos.Y);
+    public void StartLevel()
+    {
+        foreach (var tile in _tiles)
+        {
+            tile.Position = tile.Position with { Y = Random.Shared.NextSingle() * -5f - 1f };
+        }
 
-    public Vector2I GetTilePosition(int index) => new(index % Width, index / Width);
+        SpawnPlayer();
+    }
 
-    public bool IsPositionInMap(int x, int y) => x >= 0 && y >= 0 && x < Width && y < Height;
-    public bool IsPositionInMap(Vector2I pos) => IsPositionInMap(pos.X, pos.Y);
+    public void SpawnPlayer()
+    {
+        DespawnPlayer();
+
+        _playerInstance = new Player(StepOffTile, CanMoveToTile);
+        _playerInstance.Position = new Vector3(LevelData.PlayerLocation.X, 0.5f, LevelData.PlayerLocation.Y);
+        AddChild(_playerInstance);
+    }
+
+    public void DespawnPlayer()
+    {
+        if (_playerInstance is not null)
+            _playerInstance.QueueFree();
+        _playerInstance = null;
+    }
 
     public Tile? MakeTile(TileTypes type)
     {
@@ -151,15 +194,21 @@ public partial class World : Node3D
         return MakeTile((TileTypes)typeIndex);
     }
 
-    public Tile? GetTile(Vector2I pos)
+    public Tile? GetTile(int index)
     {
-        if (!IsPositionInMap(pos)) return null;
-        int tileIndex = GetTileIndex(pos.X, pos.Y);
-        if (tileIndex < 0 || tileIndex >= _tiles.Length)
+        if (index < 0 || index >= _tiles.Length)
             return null;
 
-        Tile targetTile = _tiles[tileIndex];
+        Tile targetTile = _tiles[index];
+        if (!IsInstanceValid(targetTile)) return null;
         return targetTile;
+    }
+
+    public Tile? GetTile(Vector2I pos)
+    {
+        if (!LevelData.IsPositionInMap(pos)) return null;
+        int tileIndex = LevelData.GetTileIndex(pos.X, pos.Y);
+        return GetTile(tileIndex);
     }
 
     public bool CanMoveToTile(Vector2I posFrom, Vector2I posTo)

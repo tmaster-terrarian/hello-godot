@@ -262,6 +262,11 @@ public static class MathUtil
         return b+(a-b)*MathF.Exp(-decay*dt);
     }
 
+    public static Godot.Vector3 ExpDecay(Godot.Vector3 a, Godot.Vector3 b, float decay, float dt)
+    {
+        return b+(a-b)*MathF.Exp(-decay*dt);
+    }
+
     public static Quaternion ExpDecay(Quaternion a, Quaternion b, float decay, float dt)
     {
         return Quaternion.Slerp(a, b, 1 - MathF.Exp(-decay * dt));

@@ -11,6 +11,8 @@ public partial class Tile() : Node3D
 
     public bool IsStoodOn { get; set; }
 
+    public bool IsDeleting { get; private set; }
+
     public override void _Process(double delta)
     {
         base._Process(delta);
@@ -20,7 +22,7 @@ public partial class Tile() : Node3D
 
         Position = Position with
         {
-            Y = MathUtil.ExpDecay(Position.Y, IsStoodOn ? 0.0f : 0.1f, IsStoodOn ? 40f : 10f, (float)delta)
+            Y = MathUtil.ExpDecay(Position.Y, IsStoodOn ? -0.1f : 0.0f, IsStoodOn ? 40f : 10f, (float)delta)
         };
     }
 
@@ -33,5 +35,24 @@ public partial class Tile() : Node3D
     public virtual bool CanStepOn(Vector2I direction)
     {
         return true;
+    }
+
+    public void EditorCreate()
+    {
+        Scale = Vector3.Zero;
+
+        var tween = CreateTween()
+            .SetEase(Tween.EaseType.Out)
+            .SetTrans(Tween.TransitionType.Back);
+        tween.TweenProperty(this, "scale", Vector3.One, 0.2f);
+    }
+
+    public void EditorDelete()
+    {
+        IsDeleting = true;
+        var tween = CreateTween()
+            .SetEase(Tween.EaseType.In)
+            .SetTrans(Tween.TransitionType.Linear);
+        tween.TweenProperty(this, "scale", Vector3.Zero, 0.1f).Finished += this.QueueFree;
     }
 }

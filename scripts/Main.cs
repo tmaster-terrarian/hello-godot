@@ -23,16 +23,6 @@ public partial class Main : Node
 		AddChild(_world);
 	}
 
-	public override void _Process(double delta)
-	{
-		base._Process(delta);
-
-		if (Input.IsActionJustPressed("test_click"))
-		{
-			_world.GenerateRandomLevel();
-		}
-	}
-
 	public void CenterCameraOnWorld()
 	{
 		CameraRoot.Position = new Vector3((float)_world.Width / 2 - 0.5f, 0, (float)_world.Height / 2 - 0.5f);
