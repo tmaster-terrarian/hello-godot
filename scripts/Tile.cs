@@ -37,6 +37,7 @@ public partial class Tile() : Node3D
 
     public virtual void OnStepOn() { }
     public virtual void OnStepOff() { }
+    public virtual void OnPower() { }
 
     public virtual bool CanStepOff(Vector2I direction)
     {

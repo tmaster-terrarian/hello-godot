@@ -54,12 +54,17 @@ public partial class TileBridge : Tile
     public override void OnStepOn()
     {
         if (!IsMetal) return;
-        Direction = Direction == Directions.Horizontal ? Directions.Vertical : Directions.Horizontal;
+        Rotate();
     }
 
     public override void OnStepOff()
     {
-        Direction = Direction == Directions.Horizontal ? Directions.Vertical : Directions.Horizontal;
+        Rotate();
+    }
+
+    public override void OnPower()
+    {
+        Rotate();
     }
 
     public override bool CanStepOff(Vector2I direction)
@@ -70,5 +75,10 @@ public partial class TileBridge : Tile
     {
         return direction.X != 0 && Direction == Directions.Horizontal ||
                direction.Y != 0 && Direction == Directions.Vertical;
+    }
+
+    private void Rotate()
+    {
+        Direction = Direction == Directions.Horizontal ? Directions.Vertical : Directions.Horizontal;
     }
 }

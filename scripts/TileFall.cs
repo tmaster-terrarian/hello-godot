@@ -40,21 +40,45 @@ public partial class TileFall : Tile
 
     public override void OnStepOff()
     {
-        var tween = CreateTween()
-            .SetEase(Tween.EaseType.In)
-            .SetTrans(Tween.TransitionType.Cubic);
-        tween.TweenProperty(Mesh, "scale", new Vector3(0, 0, 0), 0.2f);
+        ActionFall();
+    }
 
-        var tween2 = CreateTween()
-            .SetEase(Tween.EaseType.In)
-            .SetTrans(Tween.TransitionType.Back);
-        tween2.TweenProperty(Mesh, "rotation", new Vector3(0, Mathf.DegToRad(90), 0), 0.2f);
-
-        IsAlive = false;
+    public override void OnPower()
+    {
+        if (IsAlive) ActionFall();
+        else ActionRise();
     }
 
     public override bool CanStepOn(Vector2I direction)
     {
         return IsAlive;
+    }
+
+    private void ActionFall()
+    {
+        IsAlive = false;
+        var tween = CreateTween()
+            .SetEase(Tween.EaseType.In)
+            .SetTrans(Tween.TransitionType.Cubic);
+        tween.TweenProperty(Mesh, "scale", Vector3.Zero, 0.2f);
+
+        var tween2 = CreateTween()
+            .SetEase(Tween.EaseType.In)
+            .SetTrans(Tween.TransitionType.Back);
+        tween2.TweenProperty(Mesh, "rotation", new Vector3(0, Mathf.DegToRad(90), 0), 0.2f);
+    }
+
+    private void ActionRise()
+    {
+        IsAlive = true;
+        var tween = CreateTween()
+            .SetEase(Tween.EaseType.Out)
+            .SetTrans(Tween.TransitionType.Cubic);
+        tween.TweenProperty(Mesh, "scale", Vector3.One, 0.2f);
+
+        var tween2 = CreateTween()
+            .SetEase(Tween.EaseType.Out)
+            .SetTrans(Tween.TransitionType.Back);
+        tween2.TweenProperty(Mesh, "rotation", new Vector3(0, Mathf.DegToRad(0), 0), 0.2f);
     }
 }

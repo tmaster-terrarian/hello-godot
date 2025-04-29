@@ -35,6 +35,15 @@ public partial class Player(World world) : Node3D
     {
         base._Process(delta);
 
+        if (Input.IsActionJustPressed("action_primary"))
+        {
+            if (world.GetTile(new Vector2I((int)Position.X, (int)Position.Z)) is var tile)
+            {
+                if (!IsInstanceValid(tile)) return;
+                tile.OnPower();
+            }
+        }
+
         var inputDir = Vector3.Zero;
         if (Input.IsActionJustPressed("move_east"))
             inputDir = Vector3.Right;

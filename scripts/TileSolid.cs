@@ -42,6 +42,16 @@ public partial class TileSolid : Tile
 
     public override void OnStepOff()
     {
+        Shake();
+    }
+
+    public override void OnPower()
+    {
+        Shake();
+    }
+
+    private void Shake()
+    {
         var tween = CreateTween()
             .SetEase(Tween.EaseType.Out)
             .SetTrans(Tween.TransitionType.Cubic);
