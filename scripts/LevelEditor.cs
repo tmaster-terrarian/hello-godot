@@ -43,6 +43,7 @@ public partial class LevelEditor(World world) : Node3D
 
         _selectionBox = _selectionBoxModel.Instantiate<Node3D>();
         AddChild(_selectionBox);
+        _selectionBox.Position = _selectionBoxPosition.ToVector3(true, 0.25f);
 
         _playerSpawner = _playerSpawnerModel.Instantiate<Node3D>();
         var animationPlayer = _playerSpawner.GetNode<AnimationPlayer>("AnimationPlayer");
@@ -53,6 +54,7 @@ public partial class LevelEditor(World world) : Node3D
         _playerSpawner.GetNode<Node3D>("RoboBoy/Skeleton3D/Water Head").SetVisible(false);
         _playerSpawner.GetNode<Node3D>("Pick").SetVisible(false);
         AddChild(_playerSpawner);
+        _playerSpawner.Position = _levelData.PlayerLocation.ToVector3(true, 0.5f);
 
         _grid = Draw3D.Grid(
             -Vector3.One * 0.5f,
@@ -75,7 +77,7 @@ public partial class LevelEditor(World world) : Node3D
 
         _selectionBox.Position = MathUtil.ExpDecay(
             _selectionBox.Position,
-            new Vector3(_selectionBoxPosition.X, 0.25f, _selectionBoxPosition.Y),
+            _selectionBoxPosition.ToVector3(true, 0.25f),
             16f,
             (float)delta
         );
