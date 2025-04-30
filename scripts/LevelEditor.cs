@@ -15,7 +15,7 @@ public partial class LevelEditor(World world) : Node3D
 
     private LevelData _levelData;
 
-    private uint _tileBrushId;
+    private uint _tileBrushId = 1;
 
     private Node3D _selectionBox;
     private Vector2I _selectionBoxPosition;
