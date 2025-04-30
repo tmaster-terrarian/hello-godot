@@ -15,6 +15,8 @@ public partial class LevelEditor(World world) : Node3D
 
     private LevelData _levelData;
 
+    private uint _tileBrushId;
+
     private Node3D _selectionBox;
     private Vector2I _selectionBoxPosition;
 
@@ -22,10 +24,15 @@ public partial class LevelEditor(World world) : Node3D
     private Node3D _grid;
 
     private float _time;
+    private Viewport _viewport;
+    private Camera3D _camera3D;
 
     public override void _Ready()
     {
         base._Ready();
+
+        _viewport = GetViewport();
+        _camera3D = _viewport.GetCamera3D();
 
         // int w = 18;
         // int h = 13;
@@ -74,6 +81,18 @@ public partial class LevelEditor(World world) : Node3D
         base._Process(delta);
 
         RenderingServer.GlobalShaderParameterSet("editor_highlight_position", _selectionBox.Position);
+
+        if (Input.GetLastMouseVelocity().LengthSquared() > 0.1f)
+        {
+            var mousePosition = _viewport.GetMousePosition();
+            var from = _camera3D.ProjectRayOrigin(mousePosition);
+            var dir = from + _camera3D.ProjectRayNormal(mousePosition) - from;
+            var plane = new Plane(Vector3.Up, Vector3.Up * 0.25f);
+            if (plane.IntersectsRay(from, dir) is { } hitPos)
+            {
+                _selectionBoxPosition = new Vector2I(MathUtil.RoundToInt(hitPos.X), MathUtil.RoundToInt(hitPos.Z));
+            }
+        }
 
         _selectionBox.Position = MathUtil.ExpDecay(
             _selectionBox.Position,
@@ -149,23 +168,32 @@ public partial class LevelEditor(World world) : Node3D
         }
 
         uint addIndex = uint.MaxValue;
-        if (Input.IsKeyPressed(Key.Key0)) addIndex = 0;
         if (Input.IsKeyPressed(Key.Key1)) addIndex = 1;
         if (Input.IsKeyPressed(Key.Key2)) addIndex = 2;
         if (Input.IsKeyPressed(Key.Key3)) addIndex = MathUtil.Join(0b00, 3);
         if (Input.IsKeyPressed(Key.Key4)) addIndex = MathUtil.Join(0b01, 3);
         if (Input.IsKeyPressed(Key.Key5)) addIndex = MathUtil.Join(0b10, 3);
         if (Input.IsKeyPressed(Key.Key6)) addIndex = MathUtil.Join(0b11, 3);
+        if (addIndex < uint.MaxValue) _tileBrushId = addIndex;
 
-        if (addIndex < uint.MaxValue)
+        if (Input.IsActionPressed("editor_add"))
         {
-            if (_levelData.Tiles[tileIndex] == addIndex) return;
-            _levelData.Tiles[tileIndex] = addIndex;
-
-            world.GetTile(tileIndex)?.EditorDelete();
-            var newNode = world.GenerateTile(tileIndex, addIndex);
-
-            newNode?.EditorCreate();
+            PaintTile(tileIndex, _tileBrushId);
         }
+        if (Input.IsActionPressed("editor_remove"))
+        {
+            PaintTile(tileIndex, 0);
+        }
+    }
+
+    private void PaintTile(int tileIndex, uint tileBrushId)
+    {
+        if (_levelData.Tiles[tileIndex] == tileBrushId) return;
+        _levelData.Tiles[tileIndex] = tileBrushId;
+
+        world.GetTile(tileIndex)?.EditorDelete();
+        var newNode = world.GenerateTile(tileIndex, tileBrushId);
+
+        newNode?.EditorCreate();
     }
 }
