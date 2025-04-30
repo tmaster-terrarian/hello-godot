@@ -8,7 +8,6 @@ public partial class LevelEditor(World world) : Node3D
 {
     private PackedScene _selectionBoxModel = GD.Load<PackedScene>("res://models/selection_box.glb");
     private PackedScene _playerSpawnerModel = GD.Load<PackedScene>("res://models/player.glb");
-    private PackedScene _gridSquareModel = GD.Load<PackedScene>("res://models/grid_square.glb");
     private readonly ShaderMaterial _gridMaterial = GD.Load<ShaderMaterial>("res://materials/editor_grid.tres");
 
     public bool IsPlayMode { get; private set; }

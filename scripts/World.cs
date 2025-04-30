@@ -33,7 +33,7 @@ public partial class World : Node3D
 
         GenerateRandomLevel();
 
-        AddChild(new LevelEditor(this));
+        AddChild(new LevelEditor(this) { Name = "levelEditor" });
     }
 
     public override void _Process(double delta)
