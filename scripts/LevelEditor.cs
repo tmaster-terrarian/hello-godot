@@ -9,6 +9,7 @@ public partial class LevelEditor(World world) : Node3D
     private PackedScene _selectionBoxModel = GD.Load<PackedScene>("res://models/selection_box.glb");
     private PackedScene _playerSpawnerModel = GD.Load<PackedScene>("res://models/player.glb");
     private PackedScene _gridSquareModel = GD.Load<PackedScene>("res://models/grid_square.glb");
+    private readonly ShaderMaterial _gridMaterial = GD.Load<ShaderMaterial>("res://materials/editor_grid.tres");
 
     public bool IsPlayMode { get; private set; }
 
@@ -26,15 +27,19 @@ public partial class LevelEditor(World world) : Node3D
     {
         base._Ready();
 
-        int w = 18;
-        int h = 13;
+        // int w = 18;
+        // int h = 13;
+        int w = 128;
+        int h = 128;
         _levelData = new LevelData()
         {
             Width = w,
             Height = h,
             Tiles = new uint[w * h],
-            PlayerLocation = Vector2I.Zero,
+            PlayerLocation = new Vector2(w * 0.5f, h * 0.5f).ToVector2I(),
         };
+
+        _selectionBoxPosition = new Vector2(w * 0.5f, h * 0.5f).ToVector2I();
 
         _selectionBox = _selectionBoxModel.Instantiate<Node3D>();
         AddChild(_selectionBox);
@@ -49,7 +54,13 @@ public partial class LevelEditor(World world) : Node3D
         _playerSpawner.GetNode<Node3D>("Pick").SetVisible(false);
         AddChild(_playerSpawner);
 
-        _grid = Draw3D.Grid(-Vector3.One * 0.5f, _levelData.Width, _levelData.Height, new Color(Colors.White, 0.25f));
+        _grid = Draw3D.Grid(
+            -Vector3.One * 0.5f,
+            _levelData.Width,
+            _levelData.Height,
+            new Color(Colors.White, 0.5f),
+            _gridMaterial
+        );
         _grid.RotateX(Mathf.DegToRad(90));
         AddChild(_grid);
 
@@ -59,6 +70,8 @@ public partial class LevelEditor(World world) : Node3D
     public override void _Process(double delta)
     {
         base._Process(delta);
+
+        RenderingServer.GlobalShaderParameterSet("editor_highlight_position", _selectionBox.Position);
 
         _selectionBox.Position = MathUtil.ExpDecay(
             _selectionBox.Position,

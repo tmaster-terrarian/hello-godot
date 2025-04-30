@@ -85,3 +85,10 @@ action_primary={
 
 textures/canvas_textures/default_texture_filter=2
 environment/defaults/default_clear_color=Color(0, 0, 0, 1)
+
+[shader_globals]
+
+editor_highlight_position={
+"type": "vec3",
+"value": Vector3(0, 0, 0)
+}

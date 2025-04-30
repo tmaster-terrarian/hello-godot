@@ -386,4 +386,14 @@ public static class MathUtil
     {
         return yTangent ? new Godot.Vector3(vector.X, tangent, vector.Y) : new Godot.Vector3(vector.X, vector.Y, tangent);
     }
+
+    public static Godot.Vector2 ToVector2(this Godot.Vector2I vector)
+    {
+        return new Godot.Vector2(vector.X, vector.Y);
+    }
+
+    public static Godot.Vector2I ToVector2I(this Godot.Vector2 vector)
+    {
+        return new Godot.Vector2I((int)vector.X, (int)vector.Y);
+    }
 }
