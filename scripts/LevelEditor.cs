@@ -29,8 +29,8 @@ public partial class LevelEditor(World world) : Node3D
 
         // int w = 18;
         // int h = 13;
-        int w = 128;
-        int h = 128;
+        int w = 127;
+        int h = 127;
         _levelData = new LevelData()
         {
             Width = w,
