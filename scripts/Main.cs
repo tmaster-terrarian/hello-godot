@@ -18,8 +18,8 @@ public partial class Main : Node
 
 	public override void _Ready()
 	{
-		GetViewport().SetScaling3DMode(Viewport.Scaling3DModeEnum.Fsr2);
-		GetViewport().SetScaling3DScale(1f);
+		GetViewport().SetScaling3DMode(Viewport.Scaling3DModeEnum.Bilinear);
+		GetViewport().SetScaling3DScale(0.5f);
 
 		CameraManager = new CameraManager() { Name = "camera_manager" };
 		AddChild(CameraManager);

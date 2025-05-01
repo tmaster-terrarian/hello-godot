@@ -16,6 +16,11 @@ public partial class Player(World world) : Node3D
     private float _animationTime;
     private float _animationTimeTarget;
 
+    private float _moveInputDelay = 0f;
+    private float _moveInputWaitTime = 0.1f;
+    private float _moveInputFirstWaitTime = 0.25f;
+    private bool _moveInputHasWaitedFirstTime = false;
+
     public override void _Ready()
     {
         base._Ready();
@@ -44,21 +49,30 @@ public partial class Player(World world) : Node3D
             }
         }
 
+        _moveInputDelay = MathUtil.Approach(_moveInputDelay, 0f, (float)delta);
         var inputDir = Vector3.Zero;
-        if (Input.IsActionJustPressed("move_east"))
+        if (Input.IsActionPressed("move_east"))
             inputDir = Vector3.Right;
-        else if (Input.IsActionJustPressed("move_west"))
+        else if (Input.IsActionPressed("move_west"))
             inputDir = Vector3.Left;
-        else if (Input.IsActionJustPressed("move_south"))
+        else if (Input.IsActionPressed("move_south"))
             inputDir = Vector3.Back;
-        else if (Input.IsActionJustPressed("move_north"))
+        else if (Input.IsActionPressed("move_north"))
             inputDir = Vector3.Forward;
 
         var moveMade = inputDir.X != 0 || inputDir.Z != 0;
-        if (moveMade && (_moveTween is null || (!_moveTween.IsValid() && !_moveTween.IsRunning())))
+        if (moveMade)
         {
-            MoveDelta(new Vector3(inputDir.X, 0, inputDir.Z));
-            LookAt(Position + inputDir, Vector3.Up, true);
+            if (_moveInputDelay <= 0 && (_moveTween is null || (!_moveTween.IsValid() && !_moveTween.IsRunning())))
+            {
+                MoveDelta(new Vector3(inputDir.X, 0, inputDir.Z));
+                LookAt(Position + inputDir, Vector3.Up, true);
+            }
+        }
+        else
+        {
+            _moveInputHasWaitedFirstTime = false;
+            _moveInputDelay = 0f;
         }
 
         _animationTime = MathUtil.ExpDecay(_animationTime, _animationTimeTarget, 16f, (float)delta);
@@ -67,6 +81,9 @@ public partial class Player(World world) : Node3D
 
     private async Task Move(Vector3 position)
     {
+        _moveInputDelay = (_moveInputHasWaitedFirstTime ? _moveInputWaitTime : _moveInputFirstWaitTime) + 0.05f;
+        _moveInputHasWaitedFirstTime = true;
+
         _animationTimeTarget += (float)_animationPlayer.CurrentAnimationLength * 0.25f;
 
         Vector2I currentPosition = new Vector2I((int)Position.X, (int)Position.Z);
@@ -80,7 +97,7 @@ public partial class Player(World world) : Node3D
             .SetTrans(Tween.TransitionType.Cubic)
             .SetEase(Tween.EaseType.Out);
         _moveTween
-            .TweenProperty(this, "position", position, 0.1f);
+            .TweenProperty(this, "position", position, _moveInputWaitTime);
         await ToSignal(_moveTween, "finished");
         // GD.Print("Tween finished.");
     }
