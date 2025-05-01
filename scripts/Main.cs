@@ -9,8 +9,7 @@ using NewGameProject.Scripts;
 
 public partial class Main : Node
 {
-	[Export(PropertyHint.NodeType, "Node3D")]
-	public Node3D CameraRoot;
+	public static CameraManager CameraManager;
 
 	[Export(PropertyHint.NodeType, "WorldEnvironment")]
 	public WorldEnvironment WorldEnvironment;
@@ -22,7 +21,10 @@ public partial class Main : Node
 		GetViewport().SetScaling3DMode(Viewport.Scaling3DModeEnum.Fsr2);
 		GetViewport().SetScaling3DScale(1f);
 
-		_world = new World { Name = "world", OnGenerateWorld = CenterCameraOnWorld };
+		CameraManager = new CameraManager() { Name = "camera_manager" };
+		AddChild(CameraManager);
+
+		_world = new World { Name = "world", OnGenerateWorld = () => CameraManager.CenterCameraOnWorld(_world) };
 		AddChild(_world);
 	}
 
@@ -35,10 +37,5 @@ public partial class Main : Node
 			WorldEnvironment.Environment.BackgroundColor =
 				Color.FromHsv(Random.Shared.NextSingle(), saturation, value);
 		}
-	}
-
-	public void CenterCameraOnWorld()
-	{
-		CameraRoot.Position = new Vector3((float)_world.Width / 2 - 0.5f, 0, (float)_world.Height / 2 - 0.5f);
 	}
 }

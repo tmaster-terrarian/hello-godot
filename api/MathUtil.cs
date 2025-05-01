@@ -1,5 +1,5 @@
 using System;
-using System.Numerics;
+using Godot;
 
 namespace NewGameProject.Api;
 
@@ -43,9 +43,9 @@ public static class MathUtil
     {
         if (value == target)
             return target;
-        Vector3 direction = Vector3.Normalize(target - value);
+        Vector3 direction = (target - value).Normalized();
         Vector3 moveAmount = direction * rate;
-        if (Vector3.DistanceSquared(value, value + moveAmount) > Vector3.DistanceSquared(value, target))
+        if (value.DistanceSquaredTo(value + moveAmount) > value.DistanceSquaredTo(target))
             return target;
         return value + moveAmount;
     }
@@ -96,7 +96,7 @@ public static class MathUtil
     {
         if (current == target)
             return true;
-        if (Vector3.DistanceSquared(current, current + velocity) > Vector3.DistanceSquared(current, target))
+        if (current.DistanceSquaredTo(current + velocity) > current.DistanceSquaredTo(target))
             return true;
         return false;
     }
@@ -262,14 +262,9 @@ public static class MathUtil
         return b+(a-b)*MathF.Exp(-decay*dt);
     }
 
-    public static Godot.Vector3 ExpDecay(Godot.Vector3 a, Godot.Vector3 b, float decay, float dt)
-    {
-        return b+(a-b)*MathF.Exp(-decay*dt);
-    }
-
     public static Quaternion ExpDecay(Quaternion a, Quaternion b, float decay, float dt)
     {
-        return Quaternion.Slerp(a, b, 1 - MathF.Exp(-decay * dt));
+        return a.Slerp(b, 1 - MathF.Exp(-decay * dt));;
     }
 
     public static int Sign(float a)
@@ -316,10 +311,10 @@ public static class MathUtil
     public static Vector3 Project(Vector3 vector, Vector3 onNormal)
     {
         if (vector == Vector3.Zero) return Vector3.Zero;
-        float num = Vector3.Dot(onNormal, onNormal);
-        if (num < float.Epsilon)
+        float num = onNormal.Dot(onNormal); // This is right
+        if (num < float.Epsilon || !float.IsNormal(num))
             return Vector3.Zero;
-        return onNormal * Vector3.Dot(vector, onNormal) / num;
+        return onNormal * vector.Dot(onNormal) / num;
     }
 
     public static Vector3 ProjectOnPlane(Vector3 vector, Vector3 planeNormal)
@@ -382,18 +377,18 @@ public static class MathUtil
         return (uint)(first << 16) | (uint)(second & 0xffff);
     }
 
-    public static Godot.Vector3 ToVector3(this Godot.Vector2I vector, bool yTangent = false, float tangent = 0f)
+    public static Vector3 ToVector3(this Vector2I vector, bool yTangent = false, float tangent = 0f)
     {
-        return yTangent ? new Godot.Vector3(vector.X, tangent, vector.Y) : new Godot.Vector3(vector.X, vector.Y, tangent);
+        return yTangent ? new Vector3(vector.X, tangent, vector.Y) : new Vector3(vector.X, vector.Y, tangent);
     }
 
-    public static Godot.Vector2 ToVector2(this Godot.Vector2I vector)
+    public static Vector2 ToVector2(this Vector2I vector)
     {
-        return new Godot.Vector2(vector.X, vector.Y);
+        return new Vector2(vector.X, vector.Y);
     }
 
-    public static Godot.Vector2I ToVector2I(this Godot.Vector2 vector)
+    public static Vector2I ToVector2I(this Vector2 vector)
     {
-        return new Godot.Vector2I((int)vector.X, (int)vector.Y);
+        return new Vector2I((int)vector.X, (int)vector.Y);
     }
 }

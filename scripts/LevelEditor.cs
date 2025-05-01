@@ -9,7 +9,6 @@ public partial class LevelEditor(World world) : Node3D
     private PackedScene _selectionBoxModel = GD.Load<PackedScene>("res://models/selection_box.glb");
     private PackedScene _playerSpawnerModel = GD.Load<PackedScene>("res://models/player.glb");
     private readonly ShaderMaterial _gridMaterial = GD.Load<ShaderMaterial>("res://materials/editor_grid.tres");
-
     public bool IsPlayMode { get; private set; }
 
     private LevelData _levelData;
@@ -25,6 +24,8 @@ public partial class LevelEditor(World world) : Node3D
     private float _time;
     private Viewport _viewport;
     private Camera3D _camera3D;
+
+    private Camera3D _;
 
     public override void _Ready()
     {
@@ -164,6 +165,16 @@ public partial class LevelEditor(World world) : Node3D
         if (Input.IsKeyPressed(Key.R))
         {
             _levelData.PlayerLocation = _selectionBoxPosition;
+        }
+
+        if (Input.IsActionJustPressed("editor_toggle_camera"))
+        {
+            int newCamState = Mathf.Wrap(
+                (int)Main.CameraManager.CameraState + 1,
+                0,
+                Enum.GetNames(typeof(CameraManager.CameraStates)).Length
+            );
+            Main.CameraManager.CameraState = (CameraManager.CameraStates)newCamState;
         }
 
         uint addIndex = uint.MaxValue;
