@@ -1,11 +1,14 @@
 using System;
+using System.Collections.Generic;
 using Godot;
 using NewGameProject.Api;
+using NewGameProject.Scripts.UI;
 
 namespace NewGameProject.Scripts;
 
 public partial class LevelEditor(World world) : Node3D
 {
+    private PackedScene _uiScene = GD.Load<PackedScene>("res://scenes/ui/ui_leveleditor.tscn");
     private PackedScene _selectionBoxModel = GD.Load<PackedScene>("res://models/selection_box.glb");
     private PackedScene _playerSpawnerModel = GD.Load<PackedScene>("res://models/player.glb");
     private readonly ShaderMaterial _gridMaterial = GD.Load<ShaderMaterial>("res://materials/editor_grid.tres");
@@ -25,7 +28,7 @@ public partial class LevelEditor(World world) : Node3D
     private Viewport _viewport;
     private Camera3D _camera3D;
 
-    private Camera3D _;
+    private UiLevelEditor _uiEditor;
 
     public override void _Ready()
     {
@@ -74,6 +77,18 @@ public partial class LevelEditor(World world) : Node3D
         AddChild(_grid);
 
         world.GenerateLevel(_levelData);
+
+        _uiEditor = _uiScene.Instantiate<UiLevelEditor>();
+        _uiEditor.TileNodes =
+        [
+            new TileSolid() { Position = Vector3.Down * 0.25f },
+            new TileFall() { Position = Vector3.Down * 0.25f },
+            new TileBridge() { Position = Vector3.Down * 0.25f },
+            new TileBridge() { Position = Vector3.Down * 0.25f, Metadata = 0b01 },
+            new TileBridge() { Position = Vector3.Down * 0.25f, Metadata = 0b10 },
+            new TileBridge() { Position = Vector3.Down * 0.25f, Metadata = 0b11 },
+        ];
+        AddChild(_uiEditor);
     }
 
     public override void _Process(double delta)

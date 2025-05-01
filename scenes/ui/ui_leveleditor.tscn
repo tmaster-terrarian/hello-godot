@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://bo3d5lrhesj4d"]
+
+[ext_resource type="Script" uid="uid://cakucpmi0p0f5" path="res://scripts/ui/UiLevelEditor.cs" id="1_boxkb"]
+
+[node name="UI Editor" type="PanelContainer" node_paths=PackedStringArray("TilesListNode")]
+custom_minimum_size = Vector2(0, 200)
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_vertical = 0
+script = ExtResource("1_boxkb")
+TilesListNode = NodePath("HBoxContainer")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+alignment = 1
