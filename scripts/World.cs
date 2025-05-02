@@ -165,7 +165,7 @@ public partial class World : Node3D
         _playerInstance = null;
     }
 
-    public Tile? MakeTile(TileTypes type)
+    public static Tile? MakeTile(TileTypes type)
     {
         return type switch
         {
@@ -176,9 +176,15 @@ public partial class World : Node3D
         };
     }
 
-    public Tile? MakeTile(int typeIndex)
+    public static Tile? MakeTile(int typeIndex)
     {
         return MakeTile((TileTypes)typeIndex);
+    }
+
+    public static Tile? MakeTile(uint typeIndex)
+    {
+        var (tileIndex, tileMetadata) = MathUtil.Split(typeIndex);
+        return MakeTile((TileTypes)tileIndex)?.SetMetadata(tileMetadata);
     }
 
     public Tile? GetTile(int index)

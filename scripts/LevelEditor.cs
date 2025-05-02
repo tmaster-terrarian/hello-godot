@@ -79,14 +79,15 @@ public partial class LevelEditor(World world) : Node3D
         world.GenerateLevel(_levelData);
 
         _uiEditor = _uiScene.Instantiate<UiLevelEditor>();
-        _uiEditor.TileNodes =
+        _uiEditor.LevelEditor = this;
+        _uiEditor.TileIds =
         [
-            new TileSolid() { Position = Vector3.Down * 0.25f },
-            new TileFall() { Position = Vector3.Down * 0.25f },
-            new TileBridge() { Position = Vector3.Down * 0.25f },
-            new TileBridge() { Position = Vector3.Down * 0.25f, Metadata = 0b01 },
-            new TileBridge() { Position = Vector3.Down * 0.25f, Metadata = 0b10 },
-            new TileBridge() { Position = Vector3.Down * 0.25f, Metadata = 0b11 },
+            1,
+            2,
+            3,
+            MathUtil.Join(0b01, 3),
+            MathUtil.Join(0b10, 3),
+            MathUtil.Join(0b11, 3),
         ];
         AddChild(_uiEditor);
     }
@@ -199,7 +200,7 @@ public partial class LevelEditor(World world) : Node3D
         if (Input.IsKeyPressed(Key.Key4)) addIndex = MathUtil.Join(0b01, 3);
         if (Input.IsKeyPressed(Key.Key5)) addIndex = MathUtil.Join(0b10, 3);
         if (Input.IsKeyPressed(Key.Key6)) addIndex = MathUtil.Join(0b11, 3);
-        if (addIndex < uint.MaxValue) _tileBrushId = addIndex;
+        if (addIndex < uint.MaxValue) SetTileBrushId(addIndex);
 
         if (Input.IsActionPressed("editor_add"))
         {
@@ -209,6 +210,11 @@ public partial class LevelEditor(World world) : Node3D
         {
             PaintTile(tileIndex, 0);
         }
+    }
+
+    public void SetTileBrushId(uint tileId)
+    {
+        _tileBrushId = tileId;
     }
 
     private void PaintTile(int tileIndex, uint tileBrushId)

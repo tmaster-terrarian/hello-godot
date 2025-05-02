@@ -66,4 +66,10 @@ public partial class Tile() : Node3D
             .SetTrans(Tween.TransitionType.Linear);
         tween.TweenProperty(this, "scale", Vector3.Zero, 0.1f).Finished += this.QueueFree;
     }
+
+    public Tile SetMetadata(ushort metadata)
+    {
+        Metadata = metadata;
+        return this;
+    }
 }
