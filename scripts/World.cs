@@ -78,9 +78,9 @@ public partial class World : Node3D
         OnGenerateWorld?.Invoke();
     }
 
-    public Tile? GenerateTile(int index, uint tileData)
+    public Tile? GenerateTile(int index, ushort tileData)
     {
-        var (tileIndex, tileMetadata) = MathUtil.Split(tileData);
+        var (tileMetadata, tileIndex) = MathUtil.Split(tileData);
 
         if (_tiles.GetValue(index) is Tile existingTile)
         {
@@ -109,18 +109,18 @@ public partial class World : Node3D
     {
         var width = Random.Shared.Next(3, 9);
         var height = Random.Shared.Next(3, 9);
-        uint[] tileListTest = new uint[width * height];
+        ushort[] tileListTest = new ushort[width * height];
         for (int x = 0; x < width; x++)
         for (int y = 0; y < height; y++)
         {
-            int tileTypeIndex = Random.Shared.Next(0, 4);
+            byte tileTypeIndex = (byte)Random.Shared.Next(0, 4);
             var type = (TileTypes)tileTypeIndex;
 
-            ushort metadata = ushort.MinValue;
+            byte metadata = 0;
             if (type == TileTypes.Bridge)
-                metadata = (ushort)Random.Shared.Next();
+                metadata = (byte)Random.Shared.Next();
 
-            tileListTest[LevelData.GetTileIndex(x, y)] = MathUtil.Join(metadata, (ushort)type);
+            tileListTest[LevelData.GetTileIndex(x, y)] = MathUtil.Join(metadata, tileTypeIndex);
         }
 
         Vector2I playerLocation;
@@ -181,9 +181,9 @@ public partial class World : Node3D
         return MakeTile((TileTypes)typeIndex);
     }
 
-    public static Tile? MakeTile(uint typeIndex)
+    public static Tile? MakeTile(ushort typeIndex)
     {
-        var (tileIndex, tileMetadata) = MathUtil.Split(typeIndex);
+        var (tileMetadata, tileIndex) = MathUtil.Split(typeIndex);
         return MakeTile((TileTypes)tileIndex)?.SetMetadata(tileMetadata);
     }
 

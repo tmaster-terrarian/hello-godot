@@ -16,7 +16,7 @@ public partial class LevelEditor(World world) : Node3D
 
     private LevelData _levelData;
 
-    private uint _tileBrushId = 1;
+    private ushort _tileBrushData = 1;
 
     private Node3D _selectionBox;
     private Vector2I _selectionBoxPosition;
@@ -45,7 +45,7 @@ public partial class LevelEditor(World world) : Node3D
         {
             Width = w,
             Height = h,
-            Tiles = new uint[w * h],
+            Tiles = new ushort[w * h],
             PlayerLocation = new Vector2(w * 0.5f, h * 0.5f).ToVector2I(),
         };
 
@@ -85,7 +85,7 @@ public partial class LevelEditor(World world) : Node3D
             1,
             2,
             3,
-            MathUtil.Join(0b01, 3),
+            0b_00000001_00000011,
             MathUtil.Join(0b10, 3),
             MathUtil.Join(0b11, 3),
         ];
@@ -193,18 +193,18 @@ public partial class LevelEditor(World world) : Node3D
             Main.CameraManager.CameraState = (CameraManager.CameraStates)newCamState;
         }
 
-        uint addIndex = uint.MaxValue;
+        ushort? addIndex = null;
         if (Input.IsKeyPressed(Key.Key1)) addIndex = 1;
         if (Input.IsKeyPressed(Key.Key2)) addIndex = 2;
         if (Input.IsKeyPressed(Key.Key3)) addIndex = MathUtil.Join(0b00, 3);
         if (Input.IsKeyPressed(Key.Key4)) addIndex = MathUtil.Join(0b01, 3);
         if (Input.IsKeyPressed(Key.Key5)) addIndex = MathUtil.Join(0b10, 3);
         if (Input.IsKeyPressed(Key.Key6)) addIndex = MathUtil.Join(0b11, 3);
-        if (addIndex < uint.MaxValue) SetTileBrushId(addIndex);
+        if (addIndex is not null) SetBrushTile(addIndex.Value);
 
         if (Input.IsActionPressed("editor_add"))
         {
-            PaintTile(tileIndex, _tileBrushId);
+            PaintTile(tileIndex, _tileBrushData);
         }
         if (Input.IsActionPressed("editor_remove"))
         {
@@ -212,12 +212,12 @@ public partial class LevelEditor(World world) : Node3D
         }
     }
 
-    public void SetTileBrushId(uint tileId)
+    public void SetBrushTile(ushort data)
     {
-        _tileBrushId = tileId;
+        _tileBrushData = data;
     }
 
-    private void PaintTile(int tileIndex, uint tileBrushId)
+    private void PaintTile(int tileIndex, ushort tileBrushId)
     {
         if (_levelData.Tiles[tileIndex] == tileBrushId) return;
         _levelData.Tiles[tileIndex] = tileBrushId;

@@ -365,16 +365,37 @@ public static class MathUtil
         return new Vector3(Mod(a.X, b.X), Mod(a.Y, b.Y), Mod(a.Z, b.Z));
     }
 
-    public static (ushort, ushort) Split(uint value)
+    public static (ushort first, ushort second) Split(uint value)
     {
-        ushort first = (ushort)(value & ushort.MaxValue);
-        ushort second = (ushort)(value >> 16);
+        ushort first = (ushort)(value >> 16);
+        ushort second = (ushort)(value & ushort.MaxValue);
         return (first, second);
     }
 
-    public static uint Join(ushort first, ushort second)
+    public static (byte first, byte second) Split(ushort value)
     {
-        return (uint)(first << 16) | (uint)(second & 0xffff);
+        byte first = (byte)(value >> 8);
+        byte second = (byte)(value & byte.MaxValue);
+        return (first, second);
+    }
+
+    public static uint Join(ushort firstHalf, ushort secondHalf)
+    {
+        uint first = firstHalf;
+        uint second = secondHalf;
+        return first << 16 | second & 0xffff;
+    }
+
+    public static ushort Join(byte firstHalf, byte secondHalf)
+    {
+        ushort first = firstHalf;
+        ushort second = secondHalf;
+        return (ushort)(first << 8 | second & 0xff);
+    }
+
+    public static ushort Merge(ushort first, ushort second)
+    {
+        return (ushort)((first << 8) | (second & 0xff));
     }
 
     public static Vector3 ToVector3(this Vector2I vector, bool yTangent = false, float tangent = 0f)

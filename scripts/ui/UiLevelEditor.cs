@@ -9,7 +9,7 @@ public partial class UiLevelEditor : PanelContainer
 
     [Export]
     public Container TilesListNode { get; set; }
-    public uint[] TileIds { get; set; }
+    public ushort[] TileIds { get; set; }
 
     public override void _Ready()
     {
@@ -27,7 +27,7 @@ public partial class UiLevelEditor : PanelContainer
                 Callable.From<InputEvent>((inputEvent) =>
                 {
                     if (!inputEvent.IsActionReleased("test_click", true)) return;
-                    LevelEditor.SetTileBrushId(tileId);
+                    LevelEditor.SetBrushTile(tileId);
                 })
             );
 

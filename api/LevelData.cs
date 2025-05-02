@@ -4,7 +4,7 @@ namespace NewGameProject.Api;
 
 public struct LevelData
 {
-    public uint[] Tiles { get; set; }
+    public ushort[] Tiles { get; set; }
     public int Width { get; set; }
     public int Height { get; set; }
     public Vector2I PlayerLocation { get; set; }
