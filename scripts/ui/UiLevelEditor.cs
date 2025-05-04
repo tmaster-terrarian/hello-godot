@@ -7,9 +7,6 @@ public partial class UiLevelEditor : Control
 {
     public LevelEditor LevelEditor { get; set; }
 
-    [Signal]
-    public delegate void OnChangeSelectionEventHandler(ushort oldValue, ushort newValue);
-
     [Export]
     public Control BottomPanel { get; set; }
     [Export]
@@ -35,18 +32,20 @@ public partial class UiLevelEditor : Control
                 CustomMinimumSize = new Vector2(200, 200),
             };
             button.GuiInput += inputEvent => TileInputEvent(inputEvent, tileId);
-            OnChangeSelection += button.OnChangeSelection;
+            LevelEditor.OnChangeSelection += button.OnChangeSelection;
             TilesListNode.AddChild(button);
         }
 
         EditorClickArea.GuiInput += EditorClickAreaInput;
 
-        EmitSignalOnChangeSelection(0, LevelEditor.TileBrushData);
+        LevelEditor.SetBrushTile(LevelEditor.TileBrushData);
     }
 
     public override void _Process(double delta)
     {
         base._Process(delta);
+
+        if (!Visible) return;
 
         BottomPanel.OffsetBottom = MathUtil.ExpDecay(
             BottomPanel.OffsetBottom,
@@ -70,11 +69,9 @@ public partial class UiLevelEditor : Control
 
     private void TileInputEvent(InputEvent inputEvent, ushort tileId)
     {
-        ushort oldValue = LevelEditor.TileBrushData;
         if (inputEvent is not InputEventMouseButton mouseButton) return;
         if (!mouseButton.IsReleased()) return;
         LevelEditor.SetBrushTile(tileId);
-        EmitSignalOnChangeSelection(oldValue, tileId);
     }
 
     private void EditorClickAreaInput(InputEvent inputEvent)

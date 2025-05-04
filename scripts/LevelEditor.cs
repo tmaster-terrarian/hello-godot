@@ -8,6 +8,9 @@ namespace NewGameProject.Scripts;
 
 public partial class LevelEditor(World world) : Node3D
 {
+    [Signal]
+    public delegate void OnChangeSelectionEventHandler(ushort oldValue, ushort newValue);
+
     private PackedScene _uiScene = GD.Load<PackedScene>("res://scenes/ui/ui_leveleditor.tscn");
     private PackedScene _selectionBoxModel = GD.Load<PackedScene>("res://models/selection_box.glb");
     private PackedScene _playerSpawnerModel = GD.Load<PackedScene>("res://models/player.glb");
@@ -146,11 +149,13 @@ public partial class LevelEditor(World world) : Node3D
             {
                 world.SetLevelData(_levelData);
                 world.SpawnPlayer();
+                _uiEditor.SetVisible(false);
             }
             else
             {
                 world.DespawnPlayer();
                 world.GenerateLevel(_levelData);
+                _uiEditor.SetVisible(true);
             }
         }
     }
@@ -220,7 +225,9 @@ public partial class LevelEditor(World world) : Node3D
 
     public void SetBrushTile(ushort data)
     {
+        var oldValue = _tileBrushData;
         TileBrushData = data;
+        EmitSignalOnChangeSelection(oldValue, data);
     }
 
     private void PaintTile(int tileIndex, ushort tileBrushId)
