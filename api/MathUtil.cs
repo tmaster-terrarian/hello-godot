@@ -1,5 +1,9 @@
 using System;
+using System.Numerics;
 using Godot;
+using Quaternion = Godot.Quaternion;
+using Vector2 = Godot.Vector2;
+using Vector3 = Godot.Vector3;
 
 namespace NewGameProject.Api;
 
@@ -265,6 +269,11 @@ public static class MathUtil
     public static Quaternion ExpDecay(Quaternion a, Quaternion b, float decay, float dt)
     {
         return a.Slerp(b, 1 - MathF.Exp(-decay * dt));;
+    }
+
+    public static Color ExpDecay(Color a, Color b, float decay, float dt)
+    {
+        return b+(a-b)*MathF.Exp(-decay*dt);
     }
 
     public static int Sign(float a)
