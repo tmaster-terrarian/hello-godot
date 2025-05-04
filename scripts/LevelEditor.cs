@@ -89,6 +89,7 @@ public partial class LevelEditor(World world) : Node3D
             MathUtil.Join(0b10, 3),
             MathUtil.Join(0b11, 3),
         ];
+        _uiEditor.OnEditorClicked = OnEditorClicked;
         AddChild(_uiEditor);
     }
 
@@ -202,13 +203,17 @@ public partial class LevelEditor(World world) : Node3D
         if (Input.IsKeyPressed(Key.Key6)) addIndex = MathUtil.Join(0b11, 3);
         if (addIndex is not null) SetBrushTile(addIndex.Value);
 
-        if (Input.IsActionPressed("editor_add"))
+        if (!Input.IsMouseButtonPressed(MouseButton.Left))
         {
-            PaintTile(tileIndex, _tileBrushData);
-        }
-        if (Input.IsActionPressed("editor_remove"))
-        {
-            PaintTile(tileIndex, 0);
+            if (Input.IsActionPressed("editor_add"))
+            {
+                PaintTile(tileIndex, _tileBrushData);
+            }
+
+            if (Input.IsActionPressed("editor_remove"))
+            {
+                PaintTile(tileIndex, 0);
+            }
         }
     }
 
@@ -226,5 +231,11 @@ public partial class LevelEditor(World world) : Node3D
         var newNode = world.GenerateTile(tileIndex, tileBrushId);
 
         newNode?.EditorCreate();
+    }
+
+    private void OnEditorClicked()
+    {
+        int tileIndex = _levelData.GetTileIndex(_selectionBoxPosition);
+        PaintTile(tileIndex, _tileBrushData);
     }
 }

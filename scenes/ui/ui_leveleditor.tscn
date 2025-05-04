@@ -2,17 +2,40 @@
 
 [ext_resource type="Script" uid="uid://cakucpmi0p0f5" path="res://scripts/ui/UiLevelEditor.cs" id="1_boxkb"]
 
-[node name="UI Editor" type="PanelContainer" node_paths=PackedStringArray("TilesListNode")]
-custom_minimum_size = Vector2(0, 200)
-anchors_preset = 12
-anchor_top = 1.0
+[node name="UI Editor" type="Control" node_paths=PackedStringArray("TilesListNode", "EditorClickArea")]
+layout_mode = 3
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -200.0
-grow_vertical = 0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_boxkb")
-TilesListNode = NodePath("HBoxContainer")
+TilesListNode = NodePath("VBoxContainer/Bottom Panel/HBoxContainer")
+EditorClickArea = NodePath("VBoxContainer/Editor Click Area")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Editor Click Area" type="Control" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 20.0
+
+[node name="Bottom Panel" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="Panel" type="Panel" parent="VBoxContainer/Bottom Panel"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Bottom Panel"]
 layout_mode = 2
 alignment = 1
