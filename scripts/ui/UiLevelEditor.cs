@@ -27,12 +27,18 @@ public partial class UiLevelEditor : Control
 
         foreach (var tileId in TileIds)
         {
+            var button = new LevelEditorButton()
+            {
+                CustomMinimumSize = new Vector2(200, 200),
+            };
+            TilesListNode.AddChild(button);
+
             SubViewportContainer subViewportContainer = new SubViewportContainer()
             {
                 Stretch = true,
                 CustomMinimumSize = new Vector2(200, 200),
             };
-            TilesListNode.AddChild(subViewportContainer);
+            button.AddChild(subViewportContainer);
             subViewportContainer.GuiInput += inputEvent => TileInputEvent(inputEvent, tileId);
 
             var tileRenderer = _uiTileRendererScene.Instantiate<UiTileRenderer>();
