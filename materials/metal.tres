@@ -8,5 +8,6 @@ render_priority = 0
 shader = ExtResource("1_bad26")
 shader_parameter/matcap = ExtResource("2_bad26")
 shader_parameter/margin = 0.314
+shader_parameter/matcap_intensity = 1.0
 shader_parameter/is_spatial = false
 shader_parameter/tint = Color(1, 1, 1, 1)
