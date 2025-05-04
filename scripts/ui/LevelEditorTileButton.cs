@@ -66,11 +66,13 @@ public partial class LevelEditorTileButton : LevelEditorButton<ushort>
         {
             _selectionTime += (float)delta;
             RotationDegrees = MathUtil.ExpDecay(RotationDegrees, Mathf.Sin(_selectionTime * 10f) * 15f, 16f, (float)delta);
+            _dropShadow.Color = Colors.White;
         }
         else
         {
             _selectionTime = 0;
             RotationDegrees = 0;
+            _dropShadow.Color = Colors.Black * 0.4f;
         }
     }
 

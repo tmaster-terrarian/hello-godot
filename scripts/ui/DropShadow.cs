@@ -8,7 +8,18 @@ public partial class DropShadow : TextureRect
     private static readonly Material ShadowMaterial = new ShaderMaterial() { Shader = Shader };
     public required Control TargetNode { get; set; }
     public required Vector2 Offset { get; set; }
-    public Color Color { get; set; } = Colors.Black;
+
+    private Color _color = Colors.Black;
+    public Color Color
+    {
+        get => _color;
+        set
+        {
+            _color = value;
+            SetInstanceShaderParameter("shadow_color", value);
+        }
+    }
+
     public override void _Ready()
     {
         base._Ready();
