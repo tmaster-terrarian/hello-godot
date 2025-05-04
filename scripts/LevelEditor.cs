@@ -17,6 +17,7 @@ public partial class LevelEditor(World world) : Node3D
     private LevelData _levelData;
 
     private ushort _tileBrushData = 1;
+    public ushort TileBrushData { get => _tileBrushData; private set => _tileBrushData = value; }
 
     private Node3D _selectionBox;
     private Vector2I _selectionBoxPosition;
@@ -219,7 +220,7 @@ public partial class LevelEditor(World world) : Node3D
 
     public void SetBrushTile(ushort data)
     {
-        _tileBrushData = data;
+        TileBrushData = data;
     }
 
     private void PaintTile(int tileIndex, ushort tileBrushId)

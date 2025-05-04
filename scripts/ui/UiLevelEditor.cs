@@ -6,7 +6,9 @@ namespace NewGameProject.Scripts.UI;
 public partial class UiLevelEditor : Control
 {
     public LevelEditor LevelEditor { get; set; }
-    private PackedScene _uiTileRendererScene = GD.Load<PackedScene>("res://scenes/ui/ui_tile_renderer.tscn");
+
+    [Signal]
+    public delegate void OnChangeSelectionEventHandler(ushort oldValue, ushort newValue);
 
     [Export]
     public Control BottomPanel { get; set; }
@@ -27,23 +29,14 @@ public partial class UiLevelEditor : Control
 
         foreach (var tileId in TileIds)
         {
-            var button = new LevelEditorButton()
+            var button = new LevelEditorTileButton
             {
+                TileId = tileId,
                 CustomMinimumSize = new Vector2(200, 200),
             };
+            button.GuiInput += inputEvent => TileInputEvent(inputEvent, tileId);
+            OnChangeSelection += button.OnChangeSelection;
             TilesListNode.AddChild(button);
-
-            SubViewportContainer subViewportContainer = new SubViewportContainer()
-            {
-                Stretch = true,
-                CustomMinimumSize = new Vector2(200, 200),
-            };
-            button.AddChild(subViewportContainer);
-            subViewportContainer.GuiInput += inputEvent => TileInputEvent(inputEvent, tileId);
-
-            var tileRenderer = _uiTileRendererScene.Instantiate<UiTileRenderer>();
-            tileRenderer.Contents = World.MakeTile(tileId);
-            subViewportContainer.AddChild(tileRenderer);
         }
 
         EditorClickArea.GuiInput += EditorClickAreaInput;
@@ -75,9 +68,11 @@ public partial class UiLevelEditor : Control
 
     private void TileInputEvent(InputEvent inputEvent, ushort tileId)
     {
+        ushort oldValue = LevelEditor.TileBrushData;
         if (inputEvent is not InputEventMouseButton mouseButton) return;
         if (!mouseButton.IsReleased()) return;
         LevelEditor.SetBrushTile(tileId);
+        EmitSignalOnChangeSelection(oldValue, tileId);
     }
 
     private void EditorClickAreaInput(InputEvent inputEvent)
