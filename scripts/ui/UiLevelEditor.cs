@@ -40,6 +40,8 @@ public partial class UiLevelEditor : Control
         }
 
         EditorClickArea.GuiInput += EditorClickAreaInput;
+
+        EmitSignalOnChangeSelection(0, LevelEditor.TileBrushData);
     }
 
     public override void _Process(double delta)
