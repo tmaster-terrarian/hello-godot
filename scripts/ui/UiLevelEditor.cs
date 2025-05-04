@@ -39,7 +39,8 @@ public partial class UiLevelEditor : Control
 
     private void TileInputEvent(InputEvent inputEvent, ushort tileId)
     {
-        if (!inputEvent.IsActionReleased("test_click", true)) return;
+        if (inputEvent is not InputEventMouseButton mouseButton) return;
+        if (!mouseButton.IsReleased()) return;
         LevelEditor.SetBrushTile(tileId);
     }
 
